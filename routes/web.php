@@ -1,10 +1,10 @@
 <?php
 
+use App\Services\PromptService;
+use App\Services\StockService;
+use App\Services\StockService;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use GeminiAPI\Client;
-use GeminiAPI\Resources\ModelName;
-use GeminiAPI\Resources\Parts\TextPart;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -21,12 +21,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('stock-selector');
     
     Route::get('ai-test', function () {
-        $client = new Client('AIzaSyDt7YFFVYsyOgWgCqmd7uSYueNtpMjmcRI');
-        $response = $client->generativeModel(ModelName::GEMINI_1_5_FLASH)->generateContent(
-            new TextPart('Write a one sentence hello message'),
-        );
-        
-        return $response->text();
+        return PromptService::infer("Say hello");
     })->name('ai-test');
 
     Route::get('quiz', function () {
@@ -34,6 +29,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     })->name('quiz');
     
+    Route::get('stock-test', function () {
+         StockService::getDataForStock("AAPL");
+    })->name('stock-test');
 
 });
 

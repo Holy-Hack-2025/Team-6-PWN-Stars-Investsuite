@@ -26,7 +26,7 @@ export default function StockSelector() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Dashboard" />
+            <Head title="Stock selector" />
             <div className="flex w-full justify-center">
                 <div>
                     <div className="cardContainer">
