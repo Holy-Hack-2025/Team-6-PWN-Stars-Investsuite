@@ -13,6 +13,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function StockSelector() {
     const [lastDirection, setLastDirection] = useState();
+    const [stocks, setStocks] = useState([1]);
 
     const swiped = (direction, nameToDelete) => {
         console.log('removing: ' + nameToDelete);
@@ -20,7 +21,7 @@ export default function StockSelector() {
     };
 
     const outOfFrame = (name) => {
-        console.log(name + ' left the screen!');
+        setStocks((stocks) => stocks.slice(0, stocks.length - 1));
     };
 
     return (
@@ -28,20 +29,30 @@ export default function StockSelector() {
             <Head title="Dashboard" />
             <div className="flex w-full justify-center">
                 <div>
-                    <link href="https://fonts.googleapis.com/css?family=Damion&display=swap" rel="stylesheet" />
-                    <link href="https://fonts.googleapis.com/css?family=Alatsi&display=swap" rel="stylesheet" />
-                    <h1>React Tinder Card</h1>
                     <div className="cardContainer">
-                        <TinderCard
-                            className="swipe"
-                            key="character.name"
-                            onSwipe={(dir) => swiped(dir, 'character')}
-                            onCardLeftScreen={() => outOfFrame('character')}
-                        >
-                            <div style={{ backgroundImage: 'url(' + 'https://dummyimage.com/400x400/000/fff' + ')' }} className="card">
-                                <h3>character.name</h3>
-                            </div>
-                        </TinderCard>
+                        {stocks.map((stock) => (
+                            <TinderCard
+                                className="swipe"
+                                key="character.name"
+                                onSwipe={(dir) => swiped(dir, 'character')}
+                                onCardLeftScreen={() => outOfFrame('character')}
+                            >
+                                <div className="card bg-blue-400 text-black">
+                                    <h3 className="text-center text-3xl font-bold uppercase">TSLA</h3>
+                                    <p className="text-center text-3xl font-bold uppercase">€1839</p>
+                                    <img src="https://dummyimage.com/400x200/000/fff"></img>
+                                    <p className="px-2">
+                                        Stat <span className="float-right">A</span>
+                                    </p>
+                                    <p className="px-2">
+                                        Stat <span className="float-right">A</span>
+                                    </p>
+                                    <p className="px-2">
+                                        Stat <span className="float-right">A</span>
+                                    </p>
+                                </div>
+                            </TinderCard>
+                        ))}
                     </div>
                     {lastDirection ? <h2 className="infoText">You swiped {lastDirection}</h2> : <h2 className="infoText" />}
                 </div>

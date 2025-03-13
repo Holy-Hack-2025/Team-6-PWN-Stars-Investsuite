@@ -170,7 +170,6 @@
 
 .card {
     position: relative;
-    background-color: #fff;
     width: 80vw;
     max-width: 260px;
     height: 300px;
@@ -186,11 +185,4 @@
 }
 
 .swipe:last-of-type {
-}
-
-.card h3 {
-    position: absolute;
-    bottom: 0;
-    margin: 10px;
-    color: #fff;
 }
