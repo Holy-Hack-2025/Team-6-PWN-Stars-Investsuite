@@ -78,9 +78,7 @@ export default function Quiz() {
                 ))}
                 {selectedAnswer && (
                     <div style={{ marginTop: "20px", padding: "10px", background: "#e0e0e0" }}>
-                    {/* <strong>Explanation:</strong> {currentQuestion.explanation} */}
-                    {/* <br /> */}
-                    <p>Refresh the page for a new question!</p>
+                     <strong>Explanation:</strong> {currentQuestion.explanation} 
                     </div>
                 )}
                 </div>
