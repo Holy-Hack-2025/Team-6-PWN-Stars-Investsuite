@@ -17,6 +17,6 @@ class StockService {
         new \DateTime("-14 days"),
         new \DateTime("today")
     );
-    dd($historicalData);
+    return $historicalData;
     }
 }

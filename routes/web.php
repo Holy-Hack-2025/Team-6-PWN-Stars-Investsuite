@@ -2,7 +2,6 @@
 
 use App\Services\PromptService;
 use App\Services\StockService;
-use App\Services\StockService;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -17,7 +16,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::get('stock-selector', function () {
-        return Inertia::render('stock-selector/view');
+        return Inertia::render('stock-selector/view', [
+            'stocks' => [StockService::getDataForStock("AAPL")]
+        ]);
     })->name('stock-selector');
     
     Route::get('ai-test', function () {
