@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,7 +12,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        if (App::environment('production') === true) {
+ 
+
+            $this->app['request']->server->set('HTTPS', true);
+ 
+
+        }
     }
 
     /**
