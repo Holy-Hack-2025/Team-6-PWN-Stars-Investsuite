@@ -54,6 +54,11 @@ export default function StockSelector({ stocks: stockProps }: Props) {
                                     <Line
                                         options={{
                                             responsive: true,
+                                            plugins: {
+                                                legend: {
+                                                    display: false,
+                                                },
+                                            },
                                             scales: {
                                                 x: {
                                                     display: false,
@@ -74,7 +79,7 @@ export default function StockSelector({ stocks: stockProps }: Props) {
                                             ),
                                         }}
                                     />
-                                    <div className="mt-2">
+                                    <div className="mt-2 px-8">
                                         <p>
                                             Stat <span className="float-right">A</span>
                                         </p>
@@ -89,7 +94,7 @@ export default function StockSelector({ stocks: stockProps }: Props) {
                             </TinderCard>
                         ))}
                     </div>
-                    <div className="mt-4 flex justify-center">
+                    <div className="mt-4 hidden justify-center md:flex">
                         <button className="mr-2 rounded bg-red-500 px-4 py-2 text-white" onClick={() => swiped('left', 'character')}>
                             Swipe Left
                         </button>
