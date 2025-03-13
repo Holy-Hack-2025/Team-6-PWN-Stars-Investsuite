@@ -28,6 +28,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         
         return $response->text();
     })->name('ai-test');
+
+    Route::get('quiz', function () {
+        return Inertia::render('quiz/view');
+
+    })->name('quiz');
     
 
 });
