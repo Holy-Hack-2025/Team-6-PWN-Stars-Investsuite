@@ -3,7 +3,8 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
+        <link rel="manifest" href="manifest.json">
+        <meta name="theme-color" content="#007bff">
         {{-- Inline script to detect system dark mode preference and apply it immediately --}}
         <script>
             (function() {
@@ -42,5 +43,13 @@
     </head>
     <body class="font-sans antialiased">
         @inertia
+        <script>
+            if ('serviceWorker' in navigator) {
+              navigator.serviceWorker.register('/service-worker.js')
+                .then((reg) => console.log('Service Worker Registered', reg))
+                .catch((err) => console.log('Service Worker Registration Failed', err));
+            }
+            </script>
+            
     </body>
 </html>
