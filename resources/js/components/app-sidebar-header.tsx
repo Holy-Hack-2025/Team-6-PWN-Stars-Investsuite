@@ -8,7 +8,7 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
     return (
         <>
             <nav
-                className="shadow-t fixed right-0 bottom-0 left-0 z-50 flex h-14 w-full items-center justify-around text-white md:hidden"
+                className="shadow-t fixed right-0 bottom-0 left-0 z-50 flex h-20 w-full items-start justify-around pt-2 text-white md:hidden"
                 style={{ backgroundColor: '#6d65fc' }}
             >
                 <Link
