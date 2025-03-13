@@ -30,17 +30,14 @@ import { CategoryScale, Chart as ChartJS, Legend, LinearScale, LineElement, Poin
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 export default function StockSelector({ stocks: stockProps }: Props) {
-    const [lastDirection, setLastDirection] = useState();
+    const [lastDirection, setLastDirection] = useState<string>();
     const [stocks, setStocks] = useState([1]);
     console.log(stockProps);
 
-    const swiped = (direction, nameToDelete) => {
+    const swiped = (direction: string, nameToDelete: string) => {
         console.log('removing: ' + nameToDelete);
-        setLastDirection(direction);
-    };
-
-    const outOfFrame = (name) => {
         setStocks((stocks) => stocks.slice(0, stocks.length - 1));
+        setLastDirection(direction);
     };
 
     return (
@@ -50,12 +47,7 @@ export default function StockSelector({ stocks: stockProps }: Props) {
                 <div>
                     <div className="cardContainer">
                         {stocks.map((stock) => (
-                            <TinderCard
-                                className="swipe"
-                                key="character.name"
-                                onSwipe={(dir) => swiped(dir, 'character')}
-                                onCardLeftScreen={() => outOfFrame('character')}
-                            >
+                            <TinderCard className="swipe" key="character.name" onSwipe={(dir) => swiped(dir, 'character')}>
                                 <div className="card bg-white p-4 text-black">
                                     <h3 className="text-center text-3xl font-bold uppercase">TSLA</h3>
                                     <p className="text-center text-3xl font-bold uppercase">€1839</p>
@@ -96,6 +88,14 @@ export default function StockSelector({ stocks: stockProps }: Props) {
                                 </div>
                             </TinderCard>
                         ))}
+                    </div>
+                    <div className="mt-4 flex justify-center">
+                        <button className="mr-2 rounded bg-red-500 px-4 py-2 text-white" onClick={() => swiped('left', 'character')}>
+                            Swipe Left
+                        </button>
+                        <button className="ml-2 rounded bg-green-500 px-4 py-2 text-white" onClick={() => swiped('right', 'character')}>
+                            Swipe Right
+                        </button>
                     </div>
                     {lastDirection ? <h2 className="infoText">You swiped {lastDirection}</h2> : <h2 className="infoText" />}
                 </div>
