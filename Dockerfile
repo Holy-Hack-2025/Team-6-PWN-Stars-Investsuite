@@ -24,7 +24,7 @@ RUN npm i
 COPY --from=base /var/www/html/vendor /app/vendor
 
 COPY . . 
-RUN pnpm run build
+RUN npm run build
 
 FROM base AS final
 
