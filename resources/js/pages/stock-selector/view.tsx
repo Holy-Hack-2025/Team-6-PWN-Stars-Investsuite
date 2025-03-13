@@ -43,6 +43,7 @@ export default function StockSelector({ stocks: stockProps }: Props) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Stock selector" />
+            <h1 className="mt-3 text-center text-3xl">Stock Swiper</h1>
             <div className="flex w-full justify-center p-5">
                 <div>
                     <div className="cardContainer">
