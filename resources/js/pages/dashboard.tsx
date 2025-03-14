@@ -65,11 +65,13 @@ export default function Dashboard() {
         const today = dayjs("2025-01-01");
         let filtered: DataSet[];
 
-        if (option === "ytd") {
-            filtered = dataset.filter((d) => dayjs(d.date).isAfter(today.startOf("year")));
-        } else if (option === "previousQuarter") {
+        if (option === "1Y") {
             filtered = dataset.filter((d) =>
-                dayjs(d.date).isAfter(today.subtract(3, "months").startOf("month")) &&
+                dayjs(d.date).isAfter(today.subtract(12, "months").startOf("month")) &&
+                dayjs(d.date).isBefore(today.startOf("month"))
+            );        } else if (option === "previousQuarter") {
+            filtered = dataset.filter((d) =>
+                dayjs(d.date).isAfter(today.subtract(4, "months").startOf("month")) &&
                 dayjs(d.date).isBefore(today.startOf("month"))
             );
         } else {
@@ -89,7 +91,7 @@ export default function Dashboard() {
                 ),
                 borderColor: "rgb(75, 192, 192)",
                 backgroundColor: "rgba(75, 192, 192, 0.2)",
-                tension: 0.3,
+                tension: 0,
             },
         ],
     };
@@ -104,7 +106,7 @@ export default function Dashboard() {
         point: {
             radius: 0,
         },
-      },
+      }
     };
 
     const handleButtonClick = (option: string) => {
@@ -127,16 +129,16 @@ export default function Dashboard() {
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-4">
                     <div className="text-5xl font-bold text-center text-blue-600 dark:text-blue-400 py-8">
-                        Total Balance: €{latestNetWorth?.toLocaleString() ?? "N/A"}
+                        Total Balance €{latestNetWorth?.toLocaleString() ?? "N/A"}
                     </div>
                 </div>
-                <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border md:min-h-min">
+                <div className="border-sidebar-border/70 dark:border-sidebar-border relative flex-1 overflow-hidden rounded-xl border md:min-h-min">
                     <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
                     <Line data={chartData} options={chartOptions}/>
                 </div>
                 <div className="flex justify-center mt-4">
                     <button onClick={() => handleButtonClick("all")} className={`mx-2 px-4 py-2 rounded ${view === "all" ? "bg-blue-500 text-white" : "bg-gray-200"}`}>All</button>
-                    <button onClick={() => handleButtonClick("ytd")} className={`mx-2 px-4 py-2 rounded ${view === "ytd" ? "bg-blue-500 text-white" : "bg-gray-200"}`}>YTD</button>
+                    <button onClick={() => handleButtonClick("1Y")} className={`mx-2 px-4 py-2 rounded ${view === "1Y" ? "bg-blue-500 text-white" : "bg-gray-200"}`}>1Y</button>
                     <button onClick={() => handleButtonClick("previousQuarter")} className={`mx-2 px-4 py-2 rounded ${view === "previousQuarter" ? "bg-blue-500 text-white" : "bg-gray-200"}`}>Previous Quarter</button>
                 </div>
                 <div className="border-sidebar-border/70 dark:border-sidebar-border relative overflow-hidden rounded-xl border p-4">
