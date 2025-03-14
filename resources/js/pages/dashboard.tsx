@@ -22,10 +22,17 @@ type DataSet = {
     netWorth: number;
 };
 
+type Stock = {
+    name: string;
+    symbol: string;
+    dailyPerformance: number; // Percentage change for the day
+};
+
 export default function Dashboard() {
     const [data, setData] = useState<DataSet[]>([]);
     const [filteredData, setFilteredData] = useState<DataSet[]>([]);
     const [view, setView] = useState("all");
+    const [stocks, setStocks] = useState<Stock[]>([]);
 
     // Fetch data from JSON
     useEffect(() => {
@@ -36,6 +43,17 @@ export default function Dashboard() {
                 filterData(json, "all"); // Default view
             })
             .catch((err) => console.error("Error fetching data:", err));
+
+        // Mock stock data (replace with actual API call)
+        const mockStocks: Stock[] = [
+            { name: "Apple Inc.", symbol: "AAPL", dailyPerformance: 1.5 },
+            { name: "Google LLC", symbol: "GOOGL", dailyPerformance: -0.8 },
+            { name: "Tesla Inc.", symbol: "TSLA", dailyPerformance: 3.2 },
+            { name: "Amazon.com Inc.", symbol: "AMZN", dailyPerformance: 0.5 },
+            { name: "Microsoft Corp.", symbol: "MSFT", dailyPerformance: -1.2 },
+            { name: "Netflix Inc.", symbol: "NFLX", dailyPerformance: 2.1 },
+        ];
+        setStocks(mockStocks);
     }, []);
 
     // Filter data based on view
@@ -57,7 +75,7 @@ export default function Dashboard() {
                 dayjs(d.date).isBefore(today.startOf("month"))
             );
         } else {
-            console.log(option);
+            console.log("Showing all data"); // Debugging
             filtered = dataset;
         }
 
@@ -93,11 +111,19 @@ export default function Dashboard() {
     };
 
     const handleButtonClick = (option: string) => {
-        console.log("Click");
-      setView(option);
+        console.log("Selected view:", option); // Debugging
+        setView(option);
     };
 
     const { latestNetWorth, loading, error } = useLatestNetWorth();
+
+    if (loading) {
+        return <div className="text-5xl font-bold text-center text-blue-600 dark:text-blue-400 py-8">Loading...</div>;
+    }
+
+    if (error) {
+        return <div className="text-5xl font-bold text-center text-red-600 dark:text-red-400 py-8">Error: {error}</div>;
+    }
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -106,7 +132,7 @@ export default function Dashboard() {
                 {/* Updated Total Balance Section */}
                 <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-4">
                     <div className="text-5xl font-bold text-center text-blue-600 dark:text-blue-400 py-8">
-                        Total Balance: €{latestNetWorth.toLocaleString()}
+                        Total Balance: €{latestNetWorth?.toLocaleString() ?? "N/A"}
                     </div>
                 </div>
 
@@ -117,22 +143,57 @@ export default function Dashboard() {
                     <div className="flex justify-center mt-4">
                         <button
                             onClick={() => handleButtonClick("all")}
-                            className={`mx-2 px-4 py-2 rounded ${view === "all" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+                            className={`mx-2 px-4 py-2 rounded ${
+                                view === "all" ? "bg-blue-500 text-white" : "bg-gray-200"
+                            }`}
                         >
                             All
                         </button>
                         <button
                             onClick={() => handleButtonClick("ytd")}
-                            className={`mx-2 px-4 py-2 rounded ${view === "ytd" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+                            className={`mx-2 px-4 py-2 rounded ${
+                                view === "ytd" ? "bg-blue-500 text-white" : "bg-gray-200"
+                            }`}
                         >
                             YTD
                         </button>
                         <button
                             onClick={() => handleButtonClick("previousQuarter")}
-                            className={`mx-2 px-4 py-2 rounded ${view === "previousQuarter" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+                            className={`mx-2 px-4 py-2 rounded ${
+                                view === "previousQuarter" ? "bg-blue-500 text-white" : "bg-gray-200"
+                            }`}
                         >
                             Previous Quarter
                         </button>
+                    </div>
+                </div>
+
+                {/* Scrollable Stock List Section */}
+                <div className="border-sidebar-border/70 dark:border-sidebar-border relative overflow-hidden rounded-xl border p-4">
+                    <h2 className="text-2xl font-bold mb-4">Owned Stocks</h2>
+                    <div className="overflow-y-auto max-h-64"> {/* Scrollable container */}
+                        <table className="w-full">
+                            <thead>
+                                <tr className="text-left border-b">
+                                    <th className="p-2">Stock</th>
+                                    <th className="p-2">Symbol</th>
+                                    <th className="p-2">Daily Performance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {stocks.map((stock, index) => (
+                                    <tr key={index} className="border-b">
+                                        <td className="p-2">{stock.name}</td>
+                                        <td className="p-2">{stock.symbol}</td>
+                                        <td className={`p-2 ${
+                                            stock.dailyPerformance >= 0 ? "text-green-500" : "text-red-500"
+                                        }`}>
+                                            {stock.dailyPerformance}%
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
