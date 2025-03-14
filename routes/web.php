@@ -31,7 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         //         "bought_at" => $stock->bought_at,
         //         "bought_price" => $stock->bought_price,
         //     ];
-        });
+        //});
         //$greeting = Cache::remember("GREETING.".$user->id, now()->addDay(), function() use ($user) {
         //    return PromptService::infer("Write a personalized greeting for " . $user->name . " who just opened their investing app. They already know the app, it should just be a welcome.");
         //} );
