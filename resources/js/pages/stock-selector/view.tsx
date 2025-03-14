@@ -137,6 +137,9 @@ export default function StockSelector({ stocks: stockProps, watchList }: Props) 
                                             PE <span className="float-right">{stock.quote.forwardPE}</span>
                                         </p>
                                     </div>
+                                    <div className="flex justify-center">
+                                        <Button variant="ghost">View pitch</Button>
+                                    </div>
                                 </div>
                             </TinderCard>
                         ))}
@@ -151,26 +154,35 @@ export default function StockSelector({ stocks: stockProps, watchList }: Props) 
                     </div>
                 </div>
             </div>
-            <div className="mx-auto w-full py-4">
-                <Table>
-                    <TableHeader>
+            <div className="mx-auto w-full p-4">
+                <p className="text-center text-xl">Watchlist</p>
+                <Table className="table-auto border-collapse border border-gray-200 shadow-md">
+                    <TableHeader className="bg-gray-100">
                         <TableRow>
-                            <TableHead>Stock Name</TableHead>
-                            <TableHead>Acties</TableHead>
+                            <TableHead className="border border-gray-200 px-4 py-2">Stock Name</TableHead>
+                            <TableHead className="border border-gray-200 px-4 py-2">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {watchList.map((stock, index) => (
-                            <TableRow key={`${index}-${index}`}>
-                                <TableCell>{stock.stock_name}</TableCell>
-                                <TableCell>
+                            <TableRow key={`${index}-${index}`} className="hover:bg-gray-50">
+                                <TableCell className="border border-gray-200 px-4 py-2">{stock.stock_name}</TableCell>
+                                <TableCell className="w-0 border border-gray-200 px-4 py-2 text-center">
+                                    <Button
+                                        onClick={() => {
+                                            // TODO
+                                        }}
+                                        className="mr-2"
+                                    >
+                                        More detail
+                                    </Button>
                                     <Button
                                         variant="destructive"
                                         onClick={() => {
                                             router.delete('/stock-selector/' + stock.stock_name);
                                         }}
                                     >
-                                        Delete
+                                        Unwatch
                                     </Button>
                                 </TableCell>
                             </TableRow>

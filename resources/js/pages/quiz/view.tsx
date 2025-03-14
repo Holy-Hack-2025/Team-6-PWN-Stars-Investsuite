@@ -47,7 +47,8 @@ export default function Quiz({ questions }: Props) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Quiz" />
-            <div className="mx-auto max-w-xl p-5">
+            <div className="relative mx-auto max-w-xl p-5">
+                <div className="absolute top-0 right-0 rounded border border-black bg-white p-2 text-sm text-gray-600">You're on a 5 day streak!</div>
                 <Card>
                     <CardHeader>
                         <CardTitle>{currentQuestion.question}</CardTitle>
