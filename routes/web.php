@@ -17,7 +17,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('stock-selector', function () {
         return Inertia::render('stock-selector/view', [
-            'stocks' => [StockService::getDataForStock("AAPL")]
+            'stocks' => StockService::getDataForStocks(StockService::randomStocks())
         ]);
     })->name('stock-selector');
     
