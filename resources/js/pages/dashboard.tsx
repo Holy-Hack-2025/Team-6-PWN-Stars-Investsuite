@@ -26,6 +26,7 @@ type Stock = {
     name: string;
     symbol: string;
     dailyPerformance: number; // Percentage change for the day
+    price: number; // Current stock price
 };
 
 export default function Dashboard() {
@@ -34,29 +35,26 @@ export default function Dashboard() {
     const [view, setView] = useState("all");
     const [stocks, setStocks] = useState<Stock[]>([]);
 
-    // Fetch data from JSON
     useEffect(() => {
-        fetch("/networth.json") // Adjust if needed
+        fetch("/networth.json")
             .then((res) => res.json())
             .then((json: DataSet[]) => {
                 setData(json);
-                filterData(json, "all"); // Default view
+                filterData(json, "all");
             })
             .catch((err) => console.error("Error fetching data:", err));
 
-        // Mock stock data (replace with actual API call)
         const mockStocks: Stock[] = [
-            { name: "Apple Inc.", symbol: "AAPL", dailyPerformance: 1.5 },
-            { name: "Google LLC", symbol: "GOOGL", dailyPerformance: -0.8 },
-            { name: "Tesla Inc.", symbol: "TSLA", dailyPerformance: 3.2 },
-            { name: "Amazon.com Inc.", symbol: "AMZN", dailyPerformance: 0.5 },
-            { name: "Microsoft Corp.", symbol: "MSFT", dailyPerformance: -1.2 },
-            { name: "Netflix Inc.", symbol: "NFLX", dailyPerformance: 2.1 },
+            { name: "Apple Inc.", symbol: "AAPL", dailyPerformance: 1.5, price: 175.20 },
+            { name: "Google LLC", symbol: "GOOGL", dailyPerformance: -0.8, price: 2825.30 },
+            { name: "Tesla Inc.", symbol: "TSLA", dailyPerformance: 3.2, price: 880.50 },
+            { name: "Amazon.com Inc.", symbol: "AMZN", dailyPerformance: 0.5, price: 3450.00 },
+            { name: "Microsoft Corp.", symbol: "MSFT", dailyPerformance: -1.2, price: 299.10 },
+            { name: "Netflix Inc.", symbol: "NFLX", dailyPerformance: 2.1, price: 610.25 },
         ];
         setStocks(mockStocks);
     }, []);
 
-    // Filter data based on view
     useEffect(() => {
         filterData(data, view);
     }, [view, data]);
@@ -64,7 +62,7 @@ export default function Dashboard() {
     const filterData = (dataset: DataSet[], option: string) => {
         if (!dataset.length) return;
 
-        const today = dayjs("2025-01-01"); // Assume latest date
+        const today = dayjs("2025-01-01");
         let filtered: DataSet[];
 
         if (option === "ytd") {
@@ -75,7 +73,6 @@ export default function Dashboard() {
                 dayjs(d.date).isBefore(today.startOf("month"))
             );
         } else {
-            console.log("Showing all data"); // Debugging
             filtered = dataset;
         }
 
@@ -100,7 +97,7 @@ export default function Dashboard() {
     const chartOptions = {
       plugins: {
         legend: {
-          display: false, // Remove legend
+          display: false,
         },
       },
       elements: {
@@ -111,7 +108,6 @@ export default function Dashboard() {
     };
 
     const handleButtonClick = (option: string) => {
-        console.log("Selected view:", option); // Debugging
         setView(option);
     };
 
@@ -129,72 +125,42 @@ export default function Dashboard() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                {/* Updated Total Balance Section */}
                 <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-4">
                     <div className="text-5xl font-bold text-center text-blue-600 dark:text-blue-400 py-8">
                         Total Balance: €{latestNetWorth?.toLocaleString() ?? "N/A"}
                     </div>
                 </div>
-
-                {/* Chart Section */}
                 <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border md:min-h-min">
                     <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
                     <Line data={chartData} options={chartOptions}/>
-                    <div className="flex justify-center mt-4">
-                        <button
-                            onClick={() => handleButtonClick("all")}
-                            className={`mx-2 px-4 py-2 rounded ${
-                                view === "all" ? "bg-blue-500 text-white" : "bg-gray-200"
-                            }`}
-                        >
-                            All
-                        </button>
-                        <button
-                            onClick={() => handleButtonClick("ytd")}
-                            className={`mx-2 px-4 py-2 rounded ${
-                                view === "ytd" ? "bg-blue-500 text-white" : "bg-gray-200"
-                            }`}
-                        >
-                            YTD
-                        </button>
-                        <button
-                            onClick={() => handleButtonClick("previousQuarter")}
-                            className={`mx-2 px-4 py-2 rounded ${
-                                view === "previousQuarter" ? "bg-blue-500 text-white" : "bg-gray-200"
-                            }`}
-                        >
-                            Previous Quarter
-                        </button>
-                    </div>
                 </div>
-
-                {/* Scrollable Stock List Section */}
+                <div className="flex justify-center mt-4">
+                    <button onClick={() => handleButtonClick("all")} className={`mx-2 px-4 py-2 rounded ${view === "all" ? "bg-blue-500 text-white" : "bg-gray-200"}`}>All</button>
+                    <button onClick={() => handleButtonClick("ytd")} className={`mx-2 px-4 py-2 rounded ${view === "ytd" ? "bg-blue-500 text-white" : "bg-gray-200"}`}>YTD</button>
+                    <button onClick={() => handleButtonClick("previousQuarter")} className={`mx-2 px-4 py-2 rounded ${view === "previousQuarter" ? "bg-blue-500 text-white" : "bg-gray-200"}`}>Previous Quarter</button>
+                </div>
                 <div className="border-sidebar-border/70 dark:border-sidebar-border relative overflow-hidden rounded-xl border p-4">
                     <h2 className="text-2xl font-bold mb-4">Owned Stocks</h2>
-                    <div className="overflow-y-auto max-h-64"> {/* Scrollable container */}
-                        <table className="w-full">
-                            <thead>
-                                <tr className="text-left border-b">
-                                    <th className="p-2">Stock</th>
-                                    <th className="p-2">Symbol</th>
-                                    <th className="p-2">Daily Performance</th>
+                    <table className="w-full">
+                        <thead>
+                            <tr className="text-left border-b">
+                                <th className="p-2">Stock</th>
+                                <th className="p-2">Symbol</th>
+                                <th className="p-2">Price (€)</th>
+                                <th className="p-2">Daily Performance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {stocks.map((stock, index) => (
+                                <tr key={index} className="border-b">
+                                    <td className="p-2">{stock.name}</td>
+                                    <td className="p-2">{stock.symbol}</td>
+                                    <td className="p-2">€{stock.price.toFixed(2)}</td>
+                                    <td className={`p-2 ${stock.dailyPerformance >= 0 ? "text-green-500" : "text-red-500"}`}>{stock.dailyPerformance}%</td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {stocks.map((stock, index) => (
-                                    <tr key={index} className="border-b">
-                                        <td className="p-2">{stock.name}</td>
-                                        <td className="p-2">{stock.symbol}</td>
-                                        <td className={`p-2 ${
-                                            stock.dailyPerformance >= 0 ? "text-green-500" : "text-red-500"
-                                        }`}>
-                                            {stock.dailyPerformance}%
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </AppLayout>
