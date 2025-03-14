@@ -1,8 +1,9 @@
-import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -15,56 +16,77 @@ interface QuestionType {
     question: string;
     correctAnswer: string;
     options: string[];
-explanation: string;
+    explanation: string;
 }
 
-export default function Quiz() {
-    const [currentQuestion, setCurrentQuestion] = useState<QuestionType|null>(null);
-    const [selectedAnswer, setSelectedAnswer] = useState<string|null>(null);
-    const [shuffledOptions, setShuffledOptions] = useState<string[]|null>([]);
-  
-    // Fetch questions from JSON file
-    useEffect(() => {
-      fetch("/questions.json")
-        .then((response) => response.json())
-        .then((data: QuestionType[]) => {
-          const randomQuestion = data[Math.floor(Math.random() * data.length)];
-          setCurrentQuestion(randomQuestion);
-          setShuffledOptions([...randomQuestion.options].sort(() => Math.random() - 0.5));
-        });
-    }, []);
-  
-    if (!currentQuestion) return <p>Loading question...</p>;
-  
+interface Props {
+    questions: QuestionType[];
+}
+
+export default function Quiz({ questions }: Props) {
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
+    const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+    const [score, setScore] = useState<number>(0);
+
+    const currentQuestion = questions[currentQuestionIndex];
+
     const handleAnswerClick = (answer: string) => {
-      setSelectedAnswer(answer);
+        setSelectedAnswer(answer);
+        if (answer === currentQuestion.correctAnswer) {
+            setScore((prevScore) => prevScore + 1);
+        }
     };
+
+    const handleNextQuestion = () => {
+        setSelectedAnswer(null);
+        setCurrentQuestionIndex((prevIndex) => (prevIndex + 1) % questions.length);
+    };
+
+    if (!currentQuestion) return <p>Loading question...</p>;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Quiz" />
-            <div style={{ padding: "20px", maxWidth: "600px", margin: "auto" }}>
-                <h2>{currentQuestion.question}</h2>
-                {shuffledOptions?.map((option) => (
-                    <button
-                    key={option}
-                    onClick={() => handleAnswerClick(option)}
-                    disabled={selectedAnswer !== null}
-                    className={`block w-full px-4 py-2 my-2 text-left rounded-md border 
-                        ${selectedAnswer === null ? "bg-gray-200 hover:bg-gray-300" :
-                        option === currentQuestion.correctAnswer ? "bg-green-400 text-white" :
-                        selectedAnswer === option ? "bg-red-400 text-white" : "bg-gray-200"}
-                    `}
-                    >
-                    {option}
-                    </button>
-                ))}
-                {selectedAnswer && (
-                    <div style={{ marginTop: "20px", padding: "10px", background: "#e0e0e0" }}>
-                     <strong>Explanation:</strong> {currentQuestion.explanation} 
-                    </div>
-                )}
-                </div>
+            <div className="mx-auto max-w-xl p-5">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>{currentQuestion.question}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        {currentQuestion.options.map((option) => (
+                            <Button
+                                key={option}
+                                onClick={() => handleAnswerClick(option)}
+                                disabled={selectedAnswer !== null}
+                                className={`my-2 w-full text-left text-black ${
+                                    selectedAnswer === null
+                                        ? 'bg-gray-200 hover:bg-gray-300'
+                                        : option === currentQuestion.correctAnswer
+                                          ? 'bg-green-400'
+                                          : selectedAnswer === option
+                                            ? 'bg-red-400'
+                                            : 'bg-gray-200'
+                                }`}
+                            >
+                                {option}
+                            </Button>
+                        ))}
+                        {selectedAnswer && (
+                            <div className="mt-5 bg-gray-100 p-3">
+                                <strong>Explanation:</strong> {currentQuestion.explanation}
+                            </div>
+                        )}
+                        {selectedAnswer && (
+                            <Button onClick={handleNextQuestion} className="mt-4 w-full bg-blue-500 text-white hover:bg-blue-600">
+                                Next Question
+                            </Button>
+                        )}
+                        <div className="mt-5">
+                            <strong>Score:</strong> {score} / 5
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
         </AppLayout>
     );
 }

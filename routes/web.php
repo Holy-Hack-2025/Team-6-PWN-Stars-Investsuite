@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\StockSelectorController;
+use App\Services\LearningService;
 use App\Services\PromptService;
 use App\Services\StockService;
 use Illuminate\Support\Facades\Cache;
@@ -14,6 +15,10 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
+        //$res = Http::get("https://newsapi.org/v2/everything?q=Apple&from=2025-03-10&sortBy=popularity&apiKey=af1708d05fc54d82b951c80c295c2bd3");
+        //dd($res->json());
+
+
         $user = Auth::user();
         $greeting = Cache::remember("GREETING.".$user->id, now()->addDay(), function() use ($user) {
             return PromptService::infer("Write a personalized greeting for " . $user->name . " who just opened their investing app. They already know the app, it should just be a welcome.");
@@ -29,7 +34,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
 
     Route::get('quiz', function () {
-        return Inertia::render('quiz/view');
+        return Inertia::render('quiz/view', [
+            "questions" => Cache::remember("QUESTIONS", now()->addDay(), fn() => LearningService::getFiveRandomQuestions())
+        ]);
 
     })->name('quiz');
 
@@ -81,11 +88,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ]
         ]);
     })->name('wrapped');
-    
-    Route::get('stock-test', function () {
-         StockService::getDataForStock("AAPL");
-    })->name('stock-test');
-
 });
 
 require __DIR__.'/settings.php';
