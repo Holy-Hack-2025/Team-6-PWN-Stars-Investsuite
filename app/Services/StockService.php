@@ -16,7 +16,7 @@ class StockService {
         $historicalData = $client->getHistoricalQuoteData(
             $stockName,
             ApiClient::INTERVAL_1_DAY,
-            new \DateTime("- 1 year"),
+            new \DateTime("- 3 months"),
             new \DateTime("today")
         );
         
