@@ -1,15 +1,14 @@
-import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
+import useLatestNetWorth from '@/hooks/useLatestNetWorth';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import useLatestNetWorth from '@/hooks/useLatestNetWorth'; 
-import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
+import { Cell, Legend, Pie, PieChart, Tooltip } from 'recharts';
 
 interface Card {
     title: string;
     description: string;
-    highlightText?: string;  // Optional property for text like 450.12!
+    highlightText?: string; // Optional property for text like 450.12!
     highlightTextClass?: string; // Custom class for styling the highlight text
     extraText?: string; // Optional property for extra text like 2%
     extraTextClass?: string; // Custom class for styling the extra text
@@ -91,11 +90,11 @@ export default function Wrapped({ cards }: Props) {
                 </Pie>
                 <Tooltip />
                 <Legend
-                    verticalAlign="top"  // Align the legend vertically at the top
-                    height={50}  // Adjust the height of the legend container
+                    verticalAlign="top" // Align the legend vertically at the top
+                    height={50} // Adjust the height of the legend container
                     wrapperStyle={{
                         position: 'absolute',
-                        top: '520px',  // Adjust the position to move the legend higher
+                        top: '520px', // Adjust the position to move the legend higher
                         left: '50%',
                         transform: 'translateX(-50%)',
                     }}
@@ -108,10 +107,10 @@ export default function Wrapped({ cards }: Props) {
         <AppLayout>
             <Head title="Wrapped" />
             <div
-                className="flex justify-center items-center h-screen bg-black text-white"
+                className="flex h-full items-center justify-center bg-black text-white"
                 onClick={handleScreenClick} // Detect left or right click
             >
-                <div className="w-full h-full relative cursor-pointer overflow-hidden bg-[#EEC2BE]">
+                <div className="relative h-full w-full cursor-pointer overflow-hidden bg-[#EEC2BE]">
                     <AnimatePresence custom={direction} initial={false}>
                         <motion.div
                             key={currentIndex}
@@ -125,83 +124,81 @@ export default function Wrapped({ cards }: Props) {
                                 stiffness: 120,
                                 damping: 30,
                             }}
-                            className="absolute w-full h-full flex flex-col justify-center items-center bg-[url('/background1.jpg')] rounded-none shadow-xl z-10"
+                            className="absolute z-10 flex h-full w-full flex-col items-center justify-center rounded-none bg-[url('/background1.jpg')] shadow-xl"
                         >
                             {/* Title */}
-                            <span className="absolute text-3xl top-10">
-                                {cards[currentIndex].topText}
-                            </span>
+                            <span className="absolute top-10 text-3xl">{cards[currentIndex].topText}</span>
 
-                            {currentIndex === 0 ? <div className="absolute top-5 right-[-30px]">
-                                <img src="/icon5.png" alt="Icon" className="w-30" />
-                            </div> : ""}
-                            {currentIndex === 6 ? <div className="absolute top-5 left-[-30px]">
-                                <img src="/icon5.png" alt="Icon" className="w-30" />
-                            </div> : ""}
-                            {currentIndex === 5 ? <div className="absolute bottom-15 left-[-30px]">
-                                <img src="/icon5.png" alt="Icon" className="w-30" />
-                            </div> : ""}
+                            {currentIndex === 0 ? (
+                                <div className="absolute top-5 right-[-30px]">
+                                    <img src="/icon5.png" alt="Icon" className="w-30" />
+                                </div>
+                            ) : (
+                                ''
+                            )}
+                            {currentIndex === 6 ? (
+                                <div className="absolute top-5 left-[-30px]">
+                                    <img src="/icon5.png" alt="Icon" className="w-30" />
+                                </div>
+                            ) : (
+                                ''
+                            )}
+                            {currentIndex === 5 ? (
+                                <div className="absolute bottom-15 left-[-30px]">
+                                    <img src="/icon5.png" alt="Icon" className="w-30" />
+                                </div>
+                            ) : (
+                                ''
+                            )}
 
-                            <h2 className="text-3xl font-bold text-center relative mb-4">
+                            <h2 className="relative mb-4 text-center text-3xl font-bold">
                                 <span className="title-text">{cards[currentIndex].title}</span>
                                 {cards[currentIndex].highlightText && (
-                                    <div
-                                        className={cards[currentIndex].highlightTextClass || "text-5xl font-bold text-center mt-6"}
-                                    >
+                                    <div className={cards[currentIndex].highlightTextClass || 'mt-6 text-center text-5xl font-bold'}>
                                         {cards[currentIndex].highlightText}
                                     </div>
                                 )}
                                 {cards[currentIndex].extraText && (
-                                    <div
-                                        className={cards[currentIndex].extraTextClass || "text-3xl font-bold text-center mt-2 text-[#24B758]"}
-                                    >
+                                    <div className={cards[currentIndex].extraTextClass || 'mt-2 text-center text-3xl font-bold text-[#24B758]'}>
                                         {cards[currentIndex].extraText}
                                     </div>
                                 )}
                             </h2>
 
                             {/* Subtitle - Conditionally render if it exists */}
-                            {cards[currentIndex].subtitle && (
-                                <span className="text-2xl text-center mb-6">
-                                    {cards[currentIndex].subtitle}
-                                </span>
-                            )}
+                            {cards[currentIndex].subtitle && <span className="mb-6 text-center text-2xl">{cards[currentIndex].subtitle}</span>}
                             {cards[currentIndex].percentGreen && (
-                                <span className="text-2xl text-[#24B758] text-center mb-6">
-                                    {cards[currentIndex].percentGreen}
-                                </span>
+                                <span className="mb-6 text-center text-2xl text-[#24B758]">{cards[currentIndex].percentGreen}</span>
                             )}
                             {cards[currentIndex].percentRed && (
-                                <span className="text-2xl text-[#C02A2C] text-center mb-6">
-                                    {cards[currentIndex].percentRed}
-                                </span>
+                                <span className="mb-6 text-center text-2xl text-[#C02A2C]">{cards[currentIndex].percentRed}</span>
                             )}
                             {/* Description - Positioned higher */}
-                            <p className="absolute bottom-34 center text-2xl text-center max-width margin-10">
-                                {cards[currentIndex].description}
-                            </p>
-                            {currentIndex === 2 ? <div className="absolute top-30 center">
-                                <img src="/icon9.png" alt="Icon" className="w-50 h-50" />
-                            </div> : ""}
+                            <p className="max-width absolute bottom-34 left-5 text-center text-2xl">{cards[currentIndex].description}</p>
+                            {currentIndex === 2 ? (
+                                <div className="center absolute top-30">
+                                    <img src="/icon9.png" alt="Icon" className="h-50 w-50" />
+                                </div>
+                            ) : (
+                                ''
+                            )}
 
                             {/* Navigation Dots - Positioned below the description */}
                             <div className="absolute bottom-16 flex gap-2">
                                 {cards.map((_, index) => (
-                                    <div key={index} className="relative w-3 h-3 flex justify-center items-center">
+                                    <div key={index} className="relative flex h-3 w-3 items-center justify-center">
                                         {/* Inactive Dot */}
-                                        <div
-                                            className={`absolute w-3 h-3 rounded-full border border-white transition-all duration-300`}
-                                        />
+                                        <div className={`absolute h-3 w-3 rounded-full border border-white transition-all duration-300`} />
 
                                         {/* Active Dot with 0.6s Delayed Fill-Up Animation */}
                                         {index === currentIndex && (
                                             <motion.div
-                                                className="absolute w-3 h-3 bg-white rounded-full"
-                                                initial={{ clipPath: "inset(100% 0% 0% 0%)" }}  // Start empty (100% inset from top)
-                                                animate={{ clipPath: "inset(0% 0% 0% 0%)" }} // Fill from bottom to top
+                                                className="absolute h-3 w-3 rounded-full bg-white"
+                                                initial={{ clipPath: 'inset(100% 0% 0% 0%)' }} // Start empty (100% inset from top)
+                                                animate={{ clipPath: 'inset(0% 0% 0% 0%)' }} // Fill from bottom to top
                                                 transition={{
                                                     duration: 1,
-                                                    ease: "easeOut",
+                                                    ease: 'easeOut',
                                                     delay: 0.6, // Wait 0.6 seconds before animation starts
                                                 }}
                                             />
