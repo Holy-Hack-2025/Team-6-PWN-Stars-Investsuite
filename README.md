@@ -1,42 +1,30 @@
 # Holy Hack - repo team PWN Stars
 
-Welcome to your personal Holy Hack GitHub repository! This serves as a central hub for submitting your code to be reviewed during the judging sessions. You should modify this README file to better explain your project to the judges, making it easier for them to understand your work.
+We have decided to create a website / app with React and Typescript in the frontend and using PHP as the backend. To ensure our project works in the same way on different devices we used Docker.
 
-## 🚀 Getting Started
+We have developed Finsight, an app providing interactive financial insight targetted at young starters interested in investing. 
 
-Each team will be given its own repository within the **Holy Hack** GitHub organization, this is your personal repo. Follow these steps to participate:
+When the app is started, the quarterly rewind is shown. Here the user sees a brief entertaining overview of the previous quarter. After clicking through all the pages the user is brought to the home page. 
 
-1. **Clone this repository to your local machine using**:
-    ```sh
-    git clone https://github.com/HOLY-HACK-ORGANIZATION/YOUR-TEAM-REPO.git
-    ```
-2. **Add your project files to the appropriate directory in your team's repository**.
-3. **Commit and push your changes**:
-    ```sh
-    git add .
-    git commit -m "added my feature"
-    git push origin my-feature
-    ```
-4. **Submit a pull request (PR)** to your team's repository for code review and merge.
+Here, in a more standard way an overview is given of the user's portfolio. Its performance is shown in a chart and a complete list of the user's stocks is given below.
 
-## Repository Structure (Per Team)
+Using the menu on the bottom the user can go to the daily quiz. Here 5 randomized questions are asked with multiple choise answers. After clicking on one, an explanation to the correct answer is given.
 
-```
-YOUR-TEAM-REPO/
-│-- README.md # Documentation for your team's project
-│-- src/ # source directory
-│-- docs/ # Additional documentation or assets
-```
+Lastly, there is a stock selector page, which displays a brief overview of a stock. The user can swipe to the left to discard it or wipe to the right to add the stock to their watchlist.
 
-## Contribution Guidelines
+We believe these features will cause more people to engage in their financial future.
 
-- Make sure your code is clean and well documented.
-- Follow coding standards and best practices.
-- Submit your projects before the 16:00 deadline.
+## Running it yourself
 
-## ❓ Need help?
+We have provided you with a dockerfile, which you can use to run the project (the demo below also uses this), provided you point the .env file the a valid database.
 
-If you have any questions, you can contact the github guru's.
+If you're familiar with laravel sail, you can use ./vendor/bin/sail up to run the project. You will also need to install packages using: composer install, npm install and npm run build.
 
+## Demo
 
 https://holy-hack.de-1.yendric.be/dashboard
+You can create an account. For mobile view, use devtools and set to mobile mode (and refresh).
+
+## Notes
+
+We were experimenting with genAI and left an API key in our project for easy testing, don't worry about it :).
