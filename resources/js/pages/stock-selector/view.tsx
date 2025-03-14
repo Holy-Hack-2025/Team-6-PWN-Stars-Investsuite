@@ -95,7 +95,9 @@ export default function StockSelector({ stocks: stockProps, watchList }: Props) 
                             >
                                 <div className="card bg-white p-4 text-black">
                                     <h3 className="text-center text-3xl font-bold uppercase">{stock.name}</h3>
-                                    <p className="text-center text-3xl font-bold uppercase">{stock.quote.ask}</p>
+                                    <p className="text-center text-3xl font-bold uppercase">
+                                        €{stock.historical.findLast((a) => true)?.open.toFixed(2)}
+                                    </p>
                                     <Line
                                         options={{
                                             elements: {
