@@ -79,10 +79,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 'highlightText' => 'Daredevil',
                 'subtitle' => 'Your portfolio experienced unusual high volatility during the last quarter.',
             ],
-            [
-                'highlightText' => 'Playing it safe',
-                'subtitle' => 'Your portfolio remained steady throughout the last quarter.',
-            ],
+            // [
+            //     'highlightText' => 'Playing it safe',
+            //     'subtitle' => 'Your portfolio remained steady throughout the last quarter.',
+            // ],
             [
                 'title' => 'At this current rate, in 5 years you\'ll have',
                 'highlightText' => '30,000 !',

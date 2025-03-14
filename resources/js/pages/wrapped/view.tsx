@@ -126,7 +126,7 @@ export default function Wrapped({ cards }: Props) {
                                 </span>
                             )}
                             {/* Description - Positioned higher */}
-                            <p className="absolute bottom-34 left-1/2 text-center max-width">
+                            <p className="absolute bottom-34 left-5 text-2xl text-center max-width">
                                 {cards[currentIndex].description}
                             </p>
                             {currentIndex === 2 ? <div className="absolute top-0 left-10">
