@@ -22,21 +22,29 @@ interface TimeFrame {
 interface Stock {
     historical: TimeFrame[];
     name: string;
+    quote: {
+        ask: number;
+        epsForward: number;
+        forwardPE: number;
+    };
 }
 
 interface Props {
     stocks: Stock[];
 }
 
+import { Button } from '@/components/ui/button';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { CategoryScale, Chart as ChartJS, Legend, LinearScale, LineElement, PointElement, Title, Tooltip } from 'chart.js';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 export default function StockSelector({ stocks: stockProps }: Props) {
-    const [lastDirection, setLastDirection] = useState<string>();
     const [stocks, setStocks] = useState(stockProps);
+    console.log(stocks);
     const [currentIndex, setCurrentIndex] = useState(stocks.length - 1);
     const currentIndexRef = useRef(currentIndex);
+    const [selectedStocks, setSelectedStocks] = useState<Stock[]>([]);
     const childRefs = useMemo(
         () =>
             Array(stocks.length)
@@ -51,24 +59,22 @@ export default function StockSelector({ stocks: stockProps }: Props) {
     };
 
     const swiped = (direction: string, nameToDelete: string, index: number) => {
-        setLastDirection(direction);
+        if (direction == 'right') {
+            setSelectedStocks([...selectedStocks, stocks[index]]);
+        }
         updateCurrentIndex(index - 1);
+        setTimeout(() => setStocks((stocks) => stocks.slice(0, stocks.length - 1)), 1000);
     };
 
     const canSwipe = currentIndex >= 0;
 
     const swipe = async (dir: string) => {
         if (canSwipe && currentIndex < stocks.length) {
-            await childRefs[currentIndex].current.swipe(dir); // Swipe the card!
+            await childRefs[currentIndex].current.swipe(dir);
         }
     };
     const outOfFrame = (name: string, idx: number) => {
-        console.log(`${name} (${idx}) left the screen!`, currentIndexRef.current);
-        // handle the case in which go back is pressed before card goes outOfFrame
         currentIndexRef.current >= idx && childRefs[idx].current.restoreCard();
-        // TODO: when quickly swipe and restore multiple times the same card,
-        // it happens multiple outOfFrame events are queued and the card disappear
-        // during latest swipes. Only the last outOfFrame event should be considered valid
     };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -87,7 +93,7 @@ export default function StockSelector({ stocks: stockProps }: Props) {
                             >
                                 <div className="card bg-white p-4 text-black">
                                     <h3 className="text-center text-3xl font-bold uppercase">{stock.name}</h3>
-                                    <p className="text-center text-3xl font-bold uppercase">€1839</p>
+                                    <p className="text-center text-3xl font-bold uppercase">{stock.quote.ask}</p>
                                     <Line
                                         options={{
                                             elements: {
@@ -123,13 +129,10 @@ export default function StockSelector({ stocks: stockProps }: Props) {
                                     />
                                     <div className="mt-2 px-8">
                                         <p>
-                                            Stat <span className="float-right">A</span>
+                                            EPS <span className="float-right">{stock.quote.epsForward}</span>
                                         </p>
                                         <p>
-                                            Stat <span className="float-right">A</span>
-                                        </p>
-                                        <p>
-                                            Stat <span className="float-right">A</span>
+                                            PE <span className="float-right">{stock.quote.forwardPE}</span>
                                         </p>
                                     </div>
                                 </div>
@@ -137,21 +140,42 @@ export default function StockSelector({ stocks: stockProps }: Props) {
                         ))}
                     </div>
                     <div className="mt-4 hidden justify-center md:flex">
-                        <button
-                            className="mr-2 rounded bg-red-400 px-4 py-2 text-white hover:cursor-pointer hover:bg-red-300"
-                            onClick={() => swipe('left')}
-                        >
+                        <Button className="mr-2" variant="destructive" onClick={() => swipe('left')}>
                             Swipe Left
-                        </button>
-                        <button
-                            className="ml-2 rounded bg-green-400 px-4 py-2 text-white hover:cursor-pointer hover:bg-green-300"
-                            onClick={() => swipe('right')}
-                        >
+                        </Button>
+                        <Button className="ml-2" onClick={() => swipe('right')}>
                             Swipe Right
-                        </button>
+                        </Button>
                     </div>
-                    {lastDirection ? <h2 className="infoText">You swiped {lastDirection}</h2> : <h2 className="infoText" />}
                 </div>
+            </div>
+            <div className="mx-auto w-full py-4">
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>Stock Name</TableHead>
+                            <TableHead>Acties</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {selectedStocks.map((stock, index) => (
+                            <TableRow key={`${index}-${index}`}>
+                                <TableCell>{stock.name}</TableCell>
+                                <TableCell>
+                                    <Button
+                                        variant="destructive"
+                                        onClick={() => {
+                                            const newStocks = stocks.filter((_, i) => i !== index);
+                                            setSelectedStocks(newStocks);
+                                        }}
+                                    >
+                                        Delete
+                                    </Button>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
             </div>
         </AppLayout>
     );

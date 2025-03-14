@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use Cache;
 use Scheb\YahooFinanceApi\ApiClient;
 use Scheb\YahooFinanceApi\ApiClientFactory;
 
@@ -18,34 +19,35 @@ class StockService {
             new \DateTime("-30 days"),
             new \DateTime("today")
         );
+        
         return [
             "name" => $stockName, 
-            "historical" => $historicalData
+            "historical" => $historicalData,
+            "quote" =>  $client->getQuote($stockName)
         ];
     }
 
     public static function getDataForStocks(array $stockNames) {
-        $out = [];
+        return Cache::remember("STOCKS..DATA", now()->addDay(), function () use ($stockNames) {
+            $out = [];
 
-        foreach($stockNames as $stockName) {
-            $out[] = self::getDataForStock($stockName);
-        }
+            foreach($stockNames as $stockName) {
+                $out[] = self::getDataForStock($stockName);
+            }
 
-        return $out;
+            return $out;
+        });
     }
 
     public static function randomStocks():array {
         return [
-            "AAPL",
-            "XOM",
-            "NVDA",
-            "PG",
-            "TSLA",
-            "JPM",
-            "PFE",
-            "MCD",
-            "CAT",
-            "BA"
+            'AAPL',  // Apple Inc.
+            'MSFT',  // Microsoft Corporation
+            'AMZN',  // Amazon.com, Inc.
+            'GOOGL', // Alphabet Inc. (Class A)
+            'META',  // Meta Platforms, Inc.
+            'NVDA',  // Nvidia Corporation
+            'TSLA',  // Tesla, Inc.
         ];
     }
 }
