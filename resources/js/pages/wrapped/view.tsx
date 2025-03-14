@@ -3,6 +3,7 @@ import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import useLatestNetWorth from '@/hooks/useLatestNetWorth'; 
 import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
 
 interface Card {
@@ -23,6 +24,8 @@ interface Props {
 }
 
 export default function Wrapped({ cards }: Props) {
+    const { latestNetWorth, loading, error } = useLatestNetWorth();
+
     const [currentIndex, setCurrentIndex] = useState(0);
     const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
 
@@ -122,11 +125,13 @@ export default function Wrapped({ cards }: Props) {
                                     {cards[currentIndex].subtitle}
                                 </span>
                             )}
-
                             {/* Description - Positioned higher */}
-                            <p className="absolute bottom-24 left-1/2 transform -translate-x-1/2 text-lg whitespace-nowrap">
+                            <p className="absolute bottom-34 left-1/2 text-center max-width">
                                 {cards[currentIndex].description}
                             </p>
+                            {currentIndex === 2 ? <div className="absolute top-0 left-10">
+                                <img src="/icon9.png" alt="Icon" className="w-40 h-40" />
+                            </div> : ""}
 
                             {/* Navigation Dots - Positioned below the description */}
                             <div className="absolute bottom-16 flex gap-2">
