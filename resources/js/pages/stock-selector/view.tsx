@@ -131,10 +131,10 @@ export default function StockSelector({ stocks: stockProps, watchList }: Props) 
                                     />
                                     <div className="mt-2 px-8">
                                         <p>
-                                            EPS <span className="float-right">{stock.quote.epsForward}</span>
+                                            EPS <span className="float-right">{stock.quote.epsForward.toFixed(2)}</span>
                                         </p>
                                         <p>
-                                            PE <span className="float-right">{stock.quote.forwardPE}</span>
+                                            P/E Ratio <span className="float-right">{stock.quote.forwardPE.toFixed(2)}</span>
                                         </p>
                                     </div>
                                     <div className="flex justify-center">
