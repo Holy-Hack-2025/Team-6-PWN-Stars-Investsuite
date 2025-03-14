@@ -132,6 +132,7 @@ export default function Dashboard() {
                 <div className="border-sidebar-border/70 dark:border-sidebar-border relative overflow-hidden rounded-xl border p-4">
                     <div className="py-8 text-center text-5xl font-bold">
                         Total Balance €{latestNetWorth?.toLocaleString() ?? 'N/A'}
+                        <br />
                         <Button>
                             <Link href="/wrapped">Your wrapped is ready!</Link>
                         </Button>

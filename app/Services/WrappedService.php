@@ -8,20 +8,20 @@ class WrappedService {
     public static function giveWrapped(User $user) {
         return [
             [
+                'title' => 'Total portfolio',
+                'highlightText' => '€13.485,21',
+                'highlightTextClass' => 'text-5xl font-bold text-center mt-6',
+                'extraText' => 'All Time High',
+                'extraTextClass' => 'text-xl font-bold text-center mt-1 text-green-200',
+                'isAllTimeHigh' => true,
+            ],
+            [
                 'title' => 'Last Quarter you made',
                 'description' => 'You beat 60% of investors.',
                 'highlightText' => '+€450.12 !',
                 'highlightTextClass' => 'text-5xl font-bold text-center mt-6',
                 'percentGreen' => '+32.5 %',
                 'extraTextClass' => 'text-2xl font-bold text-center mt-2',
-            ],
-            [
-                'title' => 'Total portfolio',
-                'highlightText' => '€12,500',
-                'highlightTextClass' => 'text-5xl font-bold text-center mt-6',
-                'extraText' => 'All Time High',
-                'extraTextClass' => 'text-xl font-bold text-center mt-1 text-green-200',
-                'isAllTimeHigh' => true,
             ],
             [
                 'topText' => '🔥 Streak 6 🔥',
