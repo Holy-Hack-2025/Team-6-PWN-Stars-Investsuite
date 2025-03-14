@@ -85,7 +85,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             //     'subtitle' => 'Your portfolio remained steady throughout the last quarter.',
             // ],
             [
-                'title' => 'At the current rate you will be a millionaire in 213 years!',
+                'title' => 'At the current rate in 5 years your portfolio will be worth 156,000.',
+                'description' => "Only 20 more quarters like these and you'll be a millionaire!",
                 'highlightTextClass' => 'text-5xl font-bold text-center mt-6',
             ],
             [
@@ -93,7 +94,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 'sampleData' => json_encode([
                     ['sector' => 'Tech', 'count' => 30, 'color' => '#f02252'],
                     ['sector' => 'Healthcare', 'count' => 20, 'color' => '#0b00fd'],
-                    ['sector' => 'Energy', 'count' => 25, 'color' => '#3ded97'],
+                    ['sector' => 'Energy', 'count' => 25, 'color' => '#24B758'],
                     ['sector' => 'Defence', 'count' => 25, 'color' => '#e1e5df'],
                 ]),
             ],
