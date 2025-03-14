@@ -1,109 +1,110 @@
-    import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
-    import AppLayout from '@/layouts/app-layout';
-    import { type BreadcrumbItem } from '@/types';
-    import { Head } from '@inertiajs/react';
-    import React, { useState, useEffect } from "react";
-    import { Line } from "react-chartjs-2";
-    import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend } from "chart.js";
-    import dayjs from "dayjs";
-    import useLatestNetWorth from '@/hooks/useLatestNetWorth'; 
+import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
+import AppLayout from '@/layouts/app-layout';
+import { type BreadcrumbItem } from '@/types';
+import { Head } from '@inertiajs/react';
+import React, { useState, useEffect } from "react";
+import { Line } from "react-chartjs-2";
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend } from "chart.js";
+import dayjs from "dayjs";
+import useLatestNetWorth from '@/hooks/useLatestNetWorth'; 
 
-    ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend);
 
-    const breadcrumbs: BreadcrumbItem[] = [
-        {
-            title: 'Dashboard',
-            href: '/dashboard',
-        },
-    ];
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Dashboard',
+        href: '/dashboard',
+    },
+];
 
-    type DataSet = {
-        date: string;
-        netWorth: number;
+type DataSet = {
+    date: string;
+    netWorth: number;
+};
+
+type Stock = {
+    symbol: string;
+    dailyPerformance: number; // Percentage change for the quarter
+    price: number; // Current stock price
+    stakePercentage: number; // % in portfolio
+};
+
+export default function Dashboard() {
+    const [data, setData] = useState<DataSet[]>([]);
+    const [filteredData, setFilteredData] = useState<DataSet[]>([]);
+    const [view, setView] = useState("all");
+    const [stocks, setStocks] = useState<Stock[]>([]);
+
+    useEffect(() => {
+        fetch("/networth.json")
+            .then((res) => res.json())
+            .then((json: DataSet[]) => {
+                setData(json);
+                filterData(json, "all");
+            })
+            .catch((err) => console.error("Error fetching data:", err));
+
+        const mockStocks: Stock[] = [
+            { "symbol": "TSLA", "dailyPerformance": 12.5, "price": 240.7, "stakePercentage": 15.1},
+            { "symbol": "NVDA", "dailyPerformance": 18.0, "price": 115.6, "stakePercentage": 12.3},
+            { "symbol": "PFE", "dailyPerformance": -3.2, "price": 25.6, "stakePercentage": 17.6},
+            { "symbol": "JNJ", "dailyPerformance": 2.8, "price": 163.0, "stakePercentage": 12.4},
+            { "symbol": "XOM", "dailyPerformance": 7.5, "price": 108.7, "stakePercentage": 14.0},
+            { "symbol": "CVX", "dailyPerformance": 5.4, "price": 153.6, "stakePercentage": 10.7},
+            { "symbol": "LMT", "dailyPerformance": 10.2, "price": 467.9, "stakePercentage": 12.0},
+            { "symbol": "NOC", "dailyPerformance": 4.7, "price": 490.6, "stakePercentage": 6.0},
+            { "symbol": "AAPL", "dailyPerformance": 9.0, "price": 209.7, "stakePercentage": 7.0},
+            { "symbol": "MSFT", "dailyPerformance": 6.8, "price": 378.8, "stakePercentage": 4.9}
+        ];
+        setStocks(mockStocks);
+    }, []);
+
+    useEffect(() => {
+        filterData(data, view);
+    }, [view, data]);
+
+    const filterData = (dataset: DataSet[], option: string) => {
+        if (!dataset.length) return;
+
+        const today = dayjs("2025-01-01");
+        let filtered: DataSet[];
+
+        if (option === "1Y") {
+            filtered = dataset.filter((d) =>
+                dayjs(d.date).isAfter(today.subtract(12, "months").startOf("month")) &&
+                dayjs(d.date).isBefore(today.startOf("month"))
+            );
+        } else if (option === "previousQuarter") {
+            filtered = dataset.filter((d) =>
+                dayjs(d.date).isAfter(today.subtract(4, "months").startOf("month")) &&
+                dayjs(d.date).isBefore(today.startOf("month"))
+            );
+        } else {
+            filtered = dataset;
+        }
+
+        setFilteredData(filtered);
     };
 
-    type Stock = {
-        symbol: string;
-        dailyPerformance: number; // Percentage change for the quarter
-        price: number; // Current stock price
-        stakePercentage: number // % in portfolio
+    const chartData = {
+        labels: filteredData.map((d: DataSet) => d.date),
+        datasets: [
+            {
+                label: "Net Worth Change (%)",
+                data: filteredData.map((d, i) =>
+                    i === 0 ? 0 : ((d.netWorth - filteredData[0].netWorth) / filteredData[0].netWorth) * 100
+                ),
+                borderColor: "rgb(75, 192, 192)",
+                backgroundColor: "rgba(75, 192, 192, 0.2)",
+                tension: 0,
+            },
+        ],
     };
 
-    export default function Dashboard() {
-        const [data, setData] = useState<DataSet[]>([]);
-        const [filteredData, setFilteredData] = useState<DataSet[]>([]);
-        const [view, setView] = useState("all");
-        const [stocks, setStocks] = useState<Stock[]>([]);
-
-        useEffect(() => {
-            fetch("/networth.json")
-                .then((res) => res.json())
-                .then((json: DataSet[]) => {
-                    setData(json);
-                    filterData(json, "all");
-                })
-                .catch((err) => console.error("Error fetching data:", err));
-
-            const mockStocks: Stock[] = [
-                { "symbol": "TSLA", "dailyPerformance": 12.5, "price": 240.7, "stakePercentage": 15.1},
-                { "symbol": "NVDA", "dailyPerformance": 18.0, "price": 115.6, "stakePercentage": 12.3},
-                { "symbol": "PFE", "dailyPerformance": -3.2, "price": 25.6, "stakePercentage": 17.6},
-                { "symbol": "JNJ", "dailyPerformance": 2.8, "price": 163.0, "stakePercentage": 12.4},
-                { "symbol": "XOM", "dailyPerformance": 7.5, "price": 108.7, "stakePercentage": 14.0},
-                { "symbol": "CVX", "dailyPerformance": 5.4, "price": 153.6, "stakePercentage": 10.7},
-                { "symbol": "LMT", "dailyPerformance": 10.2, "price": 467.9, "stakePercentage": 12.0},
-                { "symbol": "NOC", "dailyPerformance": 4.7, "price": 490.6, "stakePercentage": 6.0},
-                { "symbol": "AAPL", "dailyPerformance": 9.0, "price": 209.7, "stakePercentage": 7.0},
-                { "symbol": "MSFT", "dailyPerformance": 6.8, "price": 378.8, "stakePercentage": 4.9}
-            ];
-            setStocks(mockStocks);
-        }, []);
-
-        useEffect(() => {
-            filterData(data, view);
-        }, [view, data]);
-
-        const filterData = (dataset: DataSet[], option: string) => {
-            if (!dataset.length) return;
-
-            const today = dayjs("2025-01-01");
-            let filtered: DataSet[];
-
-            if (option === "1Y") {
-                filtered = dataset.filter((d) =>
-                    dayjs(d.date).isAfter(today.subtract(12, "months").startOf("month")) &&
-                    dayjs(d.date).isBefore(today.startOf("month"))
-                );        } else if (option === "previousQuarter") {
-                filtered = dataset.filter((d) =>
-                    dayjs(d.date).isAfter(today.subtract(4, "months").startOf("month")) &&
-                    dayjs(d.date).isBefore(today.startOf("month"))
-                );
-            } else {
-                filtered = dataset;
-            }
-
-            setFilteredData(filtered);
-        };
-
-        const chartData = {
-            labels: filteredData.map((d: DataSet) => d.date),
-            datasets: [
-                {
-                    label: "Net Worth Change (%)",
-                    data: filteredData.map((d, i) =>
-                        i === 0 ? 0 : ((d.netWorth - filteredData[0].netWorth) / filteredData[0].netWorth) * 100
-                    ),
-                    borderColor: "rgb(75, 192, 192)",
-                    backgroundColor: "rgba(75, 192, 192, 0.2)",
-                    tension: 0,
-                },
-            ],
-        };
-
-        const chartOptions = {
+    const chartOptions = {
         plugins: {
             legend: {
-            display: false,
+                display: false,
             },
         },
         elements: {
@@ -111,42 +112,43 @@
                 radius: 0,
             },
         }
-        };
+    };
 
-        const handleButtonClick = (option: string) => {
-            setView(option);
-        };
+    const handleButtonClick = (option: string) => {
+        setView(option);
+    };
 
-        const { latestNetWorth, loading, error } = useLatestNetWorth();
+    const { latestNetWorth, loading, error } = useLatestNetWorth();
 
-        if (loading) {
-            return <div className="text-5xl font-bold text-center text-blue-600 dark:text-blue-400 py-8">Loading...</div>;
-        }
+    if (loading) {
+        return <div className="text-5xl font-bold text-center text-blue-600 dark:text-blue-400 py-8">Loading...</div>;
+    }
 
-        if (error) {
-            return <div className="text-5xl font-bold text-center text-red-600 dark:text-red-400 py-8">Error: {error}</div>;
-        }
+    if (error) {
+        return <div className="text-5xl font-bold text-center text-red-600 dark:text-red-400 py-8">Error: {error}</div>;
+    }
 
-        return (
-            <AppLayout breadcrumbs={breadcrumbs}>
-                <Head title="Dashboard" />
-                <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-4">
-                        <div className="text-5xl font-bold text-center text-blue-600 dark:text-blue-400 py-8">
-                            Total Balance €{latestNetWorth?.toLocaleString() ?? "N/A"}
-                        </div>
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title="Dashboard" />
+            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
+                <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-4">
+                    <div className="text-5xl font-bold text-center text-blue-600 dark:text-blue-400 py-8">
+                        Total Balance €{latestNetWorth?.toLocaleString() ?? "N/A"}
                     </div>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative flex-1 overflow-hidden rounded-xl border md:min-h-min">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                        <Line data={chartData} options={chartOptions}/>
-                    </div>
-                    <div className="flex justify-center mt-4">
-                        <button onClick={() => handleButtonClick("all")} className={`mx-2 px-4 py-2 rounded ${view === "all" ? "bg-blue-500 text-white" : "bg-gray-200"}`}>All</button>
-                        <button onClick={() => handleButtonClick("1Y")} className={`mx-2 px-4 py-2 rounded ${view === "1Y" ? "bg-blue-500 text-white" : "bg-gray-200"}`}>1Y</button>
-                        <button onClick={() => handleButtonClick("previousQuarter")} className={`mx-2 px-4 py-2 rounded ${view === "previousQuarter" ? "bg-blue-500 text-white" : "bg-gray-200"}`}>Previous Quarter</button>
-                    </div>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative overflow-hidden rounded-xl border p-4">
-                        <h2 className="text-2xl font-bold mb-4">Owned Stocks</h2>
+                </div>
+                <div className="border-sidebar-border/70 dark:border-sidebar-border relative flex-1 overflow-hidden rounded-xl border md:min-h-min">
+                    <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+                    <Line data={chartData} options={chartOptions}/>
+                </div>
+                <div className="flex justify-center mt-4">
+                    <button onClick={() => handleButtonClick("all")} className={`mx-2 px-4 py-2 rounded ${view === "all" ? "bg-blue-500 text-white" : "bg-gray-200"}`}>All</button>
+                    <button onClick={() => handleButtonClick("1Y")} className={`mx-2 px-4 py-2 rounded ${view === "1Y" ? "bg-blue-500 text-white" : "bg-gray-200"}`}>1Y</button>
+                    <button onClick={() => handleButtonClick("previousQuarter")} className={`mx-2 px-4 py-2 rounded ${view === "previousQuarter" ? "bg-blue-500 text-white" : "bg-gray-200"}`}>Previous Quarter</button>
+                </div>
+                <div className="border-sidebar-border/70 dark:border-sidebar-border relative overflow-hidden rounded-xl border p-4">
+                    <h2 className="text-2xl font-bold mb-4">Owned Stocks</h2>
+                    <div className="overflow-y-auto max-h-96"> {/* Adding scrollable container */}
                         <table className="w-full">
                             <thead>
                                 <tr className="text-left border-b">
@@ -169,6 +171,7 @@
                         </table>
                     </div>
                 </div>
-            </AppLayout>
-        );
-    }
+            </div>
+        </AppLayout>
+    );
+}
