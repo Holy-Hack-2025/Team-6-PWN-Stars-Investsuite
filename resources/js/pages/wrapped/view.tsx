@@ -17,6 +17,8 @@ interface Card {
     topText?: string;
     subtitle?: string;
     sampleData?: string; // sampleData is passed as a JSON string
+    percentGreen?: string;
+    percentRed?: string;
 }
 
 interface Props {
@@ -130,6 +132,16 @@ export default function Wrapped({ cards }: Props) {
                                 {cards[currentIndex].topText}
                             </span>
 
+                            {currentIndex === 0 ? <div className="absolute top-5 right-[-30px]">
+                                <img src="/icon5.png" alt="Icon" className="w-30" />
+                            </div> : ""}
+                            {currentIndex === 6 ? <div className="absolute top-5 left-[-30px]">
+                                <img src="/icon5.png" alt="Icon" className="w-30" />
+                            </div> : ""}
+                            {currentIndex === 5 ? <div className="absolute bottom-15 left-[-30px]">
+                                <img src="/icon5.png" alt="Icon" className="w-30" />
+                            </div> : ""}
+
                             <h2 className="text-3xl font-bold text-center relative mb-4">
                                 <span className="title-text">{cards[currentIndex].title}</span>
                                 {cards[currentIndex].highlightText && (
@@ -141,7 +153,7 @@ export default function Wrapped({ cards }: Props) {
                                 )}
                                 {cards[currentIndex].extraText && (
                                     <div
-                                        className={cards[currentIndex].extraTextClass || "text-3xl font-bold text-center mt-2 text-green-500"}
+                                        className={cards[currentIndex].extraTextClass || "text-3xl font-bold text-center mt-2 text-[#24B758]"}
                                     >
                                         {cards[currentIndex].extraText}
                                     </div>
@@ -154,12 +166,22 @@ export default function Wrapped({ cards }: Props) {
                                     {cards[currentIndex].subtitle}
                                 </span>
                             )}
+                            {cards[currentIndex].percentGreen && (
+                                <span className="text-2xl text-[#24B758] text-center mb-6">
+                                    {cards[currentIndex].percentGreen}
+                                </span>
+                            )}
+                            {cards[currentIndex].percentRed && (
+                                <span className="text-2xl text-[#C02A2C] text-center mb-6">
+                                    {cards[currentIndex].percentRed}
+                                </span>
+                            )}
                             {/* Description - Positioned higher */}
                             <p className="absolute bottom-34 left-5 text-2xl text-center max-width">
                                 {cards[currentIndex].description}
                             </p>
-                            {currentIndex === 2 ? <div className="absolute top-0 left-10">
-                                <img src="/icon9.png" alt="Icon" className="w-40 h-40" />
+                            {currentIndex === 2 ? <div className="absolute top-30 center">
+                                <img src="/icon9.png" alt="Icon" className="w-50 h-50" />
                             </div> : ""}
 
                             {/* Navigation Dots - Positioned below the description */}

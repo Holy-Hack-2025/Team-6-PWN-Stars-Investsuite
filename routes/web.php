@@ -49,7 +49,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 'description' => 'You beat 60% of investors.',
                 'highlightText' => '+€450.12 !',
                 'highlightTextClass' => 'text-5xl font-bold text-center mt-6',
-                'extraText' => '+2.21 %',
+                'percentGreen' => '+32.5 %',
                 'extraTextClass' => 'text-2xl font-bold text-center mt-2',
             ],
             [
@@ -68,12 +68,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
             [
                 'topText' => 'Play of the year!',
                 'highlightText' => 'RHM',
-                'subtitle' => '+32.5 %',
+                'percentGreen' => '+32.5 %',
             ],
             [
                 'topText' => 'Ouch that hurt!',
                 'highlightText' => 'TSLA',
-                'subtitle' => '-28.7 %',
+                'percentRed' => '-24.7 %',
             ],
             [
                 'highlightText' => 'Daredevil',
@@ -84,8 +84,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             //     'subtitle' => 'Your portfolio remained steady throughout the last quarter.',
             // ],
             [
-                'title' => 'At this current rate, in 5 years you\'ll have',
-                'highlightText' => '€30,000 !',
+                'title' => 'At the current rate you will be a millionaire in 213 years!',
                 'highlightTextClass' => 'text-5xl font-bold text-center mt-6',
             ],
             [
