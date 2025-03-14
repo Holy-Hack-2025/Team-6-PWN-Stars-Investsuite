@@ -4,7 +4,10 @@ namespace Database\Seeders;
 
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use DB;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
+use Faker\Factory as Faker;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +16,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $faker = Faker::create();
+        $stocks = ['AAPL', 'GOOGL', 'AMZN', 'MSFT', 'TSLA'];
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        for ($i = 0; $i < 100; $i++) {
+            DB::table('stocks')->insert([
+                'user_id' => 1,
+                'stock_name' => $faker->randomElement($stocks),
+                'bought_at' => Carbon::now()->subDays(rand(0, 14))->toDateTimeString(),
+            ]);
+        }
     }
 }
