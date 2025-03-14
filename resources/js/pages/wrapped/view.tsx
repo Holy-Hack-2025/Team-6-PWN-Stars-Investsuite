@@ -7,13 +7,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 interface Card {
     title: string;
     description: string;
-    highlightText?: string;  // Optional property for text like 450.12!
-    highlightTextClass?: string; // Custom class for styling the highlight text
-    extraText?: string; // Optional property for extra text like 2%
-    extraTextClass?: string; // Custom class for styling the extra text
-    isAllTimeHigh?: boolean; // Boolean to indicate if this is an all-time high
-    topText?: string;
-    subtitle?: string;
+    subtitle?: string; // Add subtitle as an optional property
+    highlightText?: string;
+    highlightTextClass?: string;
+    extraText?: string;
+    extraTextClass?: string;
 }
 
 interface Props {
@@ -22,11 +20,25 @@ interface Props {
 
 export default function Wrapped({ cards }: Props) {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [animate, setAnimate] = useState(false);
+    const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
 
-    // Move to the next card when clicked
-    const goToNextCard = () => {
-        if (currentIndex < cards.length - 1) {
-            setCurrentIndex(currentIndex + 1);
+    const handleScreenClick = (event: React.MouseEvent<HTMLDivElement>) => {
+        const screenWidth = window.innerWidth;
+        const clickX = event.clientX;
+
+        if (clickX < screenWidth / 2) {
+            // Clicked on left half (Go Back)
+            if (currentIndex > 0) {
+                setDirection('backward');
+                setCurrentIndex(currentIndex - 1);
+            }
+        } else {
+            // Clicked on right half (Go Forward)
+            if (currentIndex < cards.length - 1) {
+                setDirection('forward');
+                setCurrentIndex(currentIndex + 1);
+            }
         }
     };
 
@@ -35,32 +47,26 @@ export default function Wrapped({ cards }: Props) {
             <Head title="Wrapped" />
             <div
                 className="flex justify-center items-center h-screen bg-black text-white"
-                onClick={goToNextCard} // Handle click event to go to the next card
+                onClick={handleScreenClick} // Detect left or right click
             >
-                <div className="w-full h-full relative cursor-pointer">
-                    <AnimatePresence>
+                <div className="w-full h-full relative cursor-pointer overflow-hidden bg-[#EEC2BE]">
+                    <AnimatePresence custom={direction} initial={false}>
                         <motion.div
                             key={currentIndex}
-                            initial={{ x: '100%' }} // Start off-screen to the right
-                            animate={{ x: 0 }} // Slide in from the right
-                            exit={{ x: '-100%' }} // Exit completely off-screen to the left
+                            custom={direction}
+                            initial={{ x: direction === 'forward' ? '100%' : '-100%' }}
+                            animate={{ x: 0 }}
+                            exit={{ x: direction === 'forward' ? '-100%' : '100%' }}
                             transition={{
-                                duration: 0.5, // Slide duration
-                                type: 'spring', // Use spring for natural motion
-                                stiffness: 120, // Adjust stiffness for smoother movement
-                                damping: 30, // Adjust damping for less bounce
-                                delay: 0.2, // Slightly longer delay before the next card enters
+                                duration: 0.5,
+                                type: 'spring',
+                                stiffness: 120,
+                                damping: 30,
                             }}
                             className="absolute w-full h-full flex flex-col justify-center items-center bg-[#EEC2BE] rounded-none shadow-xl z-10"
                         >
-                            {/* Title: Render title with optional highlightText */}
-                            
-                            <span className="absolute text-3xl top-10">
-                                    {cards[currentIndex].topText}
-                            </span>
-
+                            {/* Title */}
                             <h2 className="text-3xl font-bold text-center relative mb-4">
-                                
                                 <span className="title-text">
                                     {cards[currentIndex].title}
                                 </span>
@@ -71,9 +77,7 @@ export default function Wrapped({ cards }: Props) {
                                         {cards[currentIndex].highlightText}
                                     </div>
                                 )}
-
-                                {/* Conditionally render "All Time High" */}
-                                {cards[currentIndex].isAllTimeHigh && (
+                                {cards[currentIndex].extraText && (
                                     <div
                                         className={cards[currentIndex].extraTextClass || "text-3xl font-bold text-center mt-2 text-green-500"}
                                     >
@@ -81,14 +85,44 @@ export default function Wrapped({ cards }: Props) {
                                     </div>
                                 )}
                             </h2>
-                            <span className="text-2xl text-center">
-                                {cards[currentIndex].subtitle}
-                            </span>
 
-                            {/* Description: Positioned at a higher point and making sure the text wraps */}
-                            <p className="absolute bottom-50 width-80 text-2xl text-center">
+                            {/* Subtitle - Conditionally render if it exists */}
+                            {cards[currentIndex].subtitle && (
+                                <span className="text-2xl text-center">
+                                    {cards[currentIndex].subtitle}
+                                </span>
+                            )}
+
+                            {/* Description - Positioned higher */}
+                            <p className="absolute bottom-24 left-1/2 transform -translate-x-1/2 text-lg whitespace-nowrap">
                                 {cards[currentIndex].description}
                             </p>
+
+                            {/* Navigation Dots - Positioned below the description */}
+                            <div className="absolute bottom-16 flex gap-2">
+                                {cards.map((_, index) => (
+                                    <div key={index} className="relative w-3 h-3 flex justify-center items-center">
+                                        {/* Inactive Dot */}
+                                        <div
+                                            className={`absolute w-3 h-3 rounded-full border border-white transition-all duration-300`}
+                                        />
+
+                                        {/* Active Dot with 0.6s Delayed Fill-Up Animation */}
+                                        {index === currentIndex && (
+                                            <motion.div
+                                                className="absolute w-3 h-3 bg-white rounded-full"
+                                                initial={{ clipPath: "inset(100% 0% 0% 0%)" }}  // Start empty (100% inset from top)
+                                                animate={{ clipPath: "inset(0% 0% 0% 0%)" }} // Fill from bottom to top
+                                                transition={{
+                                                    duration: 1,
+                                                    ease: "easeOut",
+                                                    delay: 0.6, // Wait 0.6 seconds before animation starts
+                                                }}
+                                            />
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
                         </motion.div>
                     </AnimatePresence>
                 </div>
