@@ -55,23 +55,6 @@ export default function Quiz() {
                         option === currentQuestion.correctAnswer ? "bg-green-400 text-white" :
                         selectedAnswer === option ? "bg-red-400 text-white" : "bg-gray-200"}
                     `}
-                    // style={{
-                    //     display: "block",
-                    //     margin: "10px 0",
-                    //     padding: "10px",
-                    //     width: "100%",
-                    //     textAlign: "left",
-                    //     backgroundColor:
-                    //     selectedAnswer === null
-                    //         ? "#f0f0f0"
-                    //         : option === currentQuestion.correctAnswer
-                    //         ? "lightgreen"
-                    //         : selectedAnswer === option
-                    //         ? "lightcoral"
-                    //         : "#f0f0f0",
-                    //     cursor: selectedAnswer === null ? "pointer" : "default",
-                    //     border: "1px solid #ccc",
-                    // }}
                     >
                     {option}
                     </button>
