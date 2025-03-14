@@ -11,6 +11,9 @@ interface Card {
     highlightTextClass?: string; // Custom class for styling the highlight text
     extraText?: string; // Optional property for extra text like 2%
     extraTextClass?: string; // Custom class for styling the extra text
+    isAllTimeHigh?: boolean; // Boolean to indicate if this is an all-time high
+    topText?: string;
+    subtitle?: string;
 }
 
 interface Props {
@@ -51,43 +54,39 @@ export default function Wrapped({ cards }: Props) {
                             className="absolute w-full h-full flex flex-col justify-center items-center bg-[#EEC2BE] rounded-none shadow-xl z-10"
                         >
                             {/* Title: Render title with optional highlightText */}
+                            
+                            <span className="absolute text-3xl top-10">
+                                    {cards[currentIndex].topText}
+                            </span>
+
                             <h2 className="text-3xl font-bold text-center relative mb-4">
-                                <span
-                                    className="title-text"
-                                    dangerouslySetInnerHTML={{
-                                        __html: cards[currentIndex].title.split("<span")[0],
-                                    }}
-                                />
+                                
+                                <span className="title-text">
+                                    {cards[currentIndex].title}
+                                </span>
                                 {cards[currentIndex].highlightText && (
                                     <div
-                                        className={cards[currentIndex].highlightTextClass || "text-4xl font-bold text-center mt-4"}
+                                        className={cards[currentIndex].highlightTextClass || "text-5xl font-bold text-center mt-6"}
                                     >
-                                        <span
-                                            className="title-text"
-                                            dangerouslySetInnerHTML={{
-                                                __html: cards[currentIndex].highlightText,
-                                            }}
-                                        />
+                                        {cards[currentIndex].highlightText}
                                     </div>
                                 )}
 
-                                {/* Extra Text (e.g. "2%") */}
-                                {cards[currentIndex].extraText && (
+                                {/* Conditionally render "All Time High" */}
+                                {cards[currentIndex].isAllTimeHigh && (
                                     <div
-                                        className={cards[currentIndex].extraTextClass || "text-2xl font-bold text-center mt-2"}
+                                        className={cards[currentIndex].extraTextClass || "text-3xl font-bold text-center mt-2 text-green-500"}
                                     >
-                                        <span
-                                            className="title-text"
-                                            dangerouslySetInnerHTML={{
-                                                __html: cards[currentIndex].extraText,
-                                            }}
-                                        />
+                                        {cards[currentIndex].extraText}
                                     </div>
                                 )}
                             </h2>
+                            <span className="text-2xl text-center">
+                                {cards[currentIndex].subtitle}
+                            </span>
 
-                            {/* Description: Positioned at the bottom */}
-                            <p className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-lg whitespace-nowrap">
+                            {/* Description: Positioned at a higher point and making sure the text wraps */}
+                            <p className="absolute bottom-50 width-80 text-2xl text-center">
                                 {cards[currentIndex].description}
                             </p>
                         </motion.div>

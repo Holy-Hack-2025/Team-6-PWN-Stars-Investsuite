@@ -35,32 +35,48 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('wrapped/view', [
             "cards" => [
                 [
-                    'title' => 'Last Quarter you made', // Title without the 450.12
+                    'title' => 'Last Quarter you made',
                     'description' => 'You beat 60% of investors.',
-                    'highlightText' => '<span style="font-size: 3rem; font-weight: bold;">+450.12 !</span>', // Highlighted text for the first card
-                    'highlightTextClass' => 'text-5xl font-bold text-center mt-6', // Customize spacing and style
-                    'extraText' => '<span style="font-size: 2rem; color: #fff;">+2.21 %</span>', // Additional text under the highlighted number
-                    'extraTextClass' => 'text-2xl font-bold text-center mt-2', // Customize the space between highlight and extra text
+                    'highlightText' => '+450.12 !',
+                    'highlightTextClass' => 'text-5xl font-bold text-center mt-6',
+                    'extraText' => '+2.21 %',
+                    'extraTextClass' => 'text-2xl font-bold text-center mt-2',
                 ],
                 [
-                    'title' => 'Top Asset Classes',
-                    'description' => 'These were your most invested asset categories.'
+                    'title' => 'Total portfolio',
+                    'highlightText' => '12,500',
+                    'highlightTextClass' => 'text-5xl font-bold text-center mt-6',
+                    'extraText' => 'All Time High',
+                    'extraTextClass' => 'text-xl font-bold text-center mt-1 text-green-200',  // Changed to text-xl
+                    'isAllTimeHigh' => true, // This boolean determines whether "All Time High" is shown
+                ],
+
+                [
+                    'topText' => '🔥 Streak 6 🔥',
+                    'highlightText' => 'Congrats!',
+                    'description' => 'You\'ve beaten the market for the 6th quarter in a row!', // Specific description for the third slide
                 ],
                 [
-                    'title' => 'Biggest Wins',
-                    'description' => 'Your best-performing stocks and investments!'
+                    'topText' => 'Play of the year!',
+                    'highlightText' => 'RHM',
+                    'subtitle' => '+32.5 %'
+                    
                 ],
                 [
-                    'title' => 'Time in the Market',
-                    'description' => 'See how long you\'ve held onto key investments.'
+                    'topText' => 'Ouch that hurt!',
+                    'highlightText' => 'TSLA',
+                    'subtitle' => '-28.7 %'
                 ],
                 [
-                    'title' => 'Final Insights',
-                    'description' => 'A recap of your investing journey this year!'
+                    'highlightText' => 'Daredevil',
+                    'subtitle' => 'Your portfolio experienced unusual high volatility during the last quarter.'
+                ],
+                [
+                    'highlightText' => 'Playing it safe',
+                    'subtitle' => 'Your portfolio remained steady throughout the last quarter.'
                 ]
             ]
         ]);
-
     })->name('wrapped');
     
     Route::get('stock-test', function () {
