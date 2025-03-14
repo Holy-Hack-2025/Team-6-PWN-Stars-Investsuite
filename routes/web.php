@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\StockSelectorController;
 use App\Services\PromptService;
 use App\Services\StockService;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -12,18 +14,19 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
+        $user = Auth::user();
+        $greeting = Cache::remember("GREETING.".$user->id, now()->addDay(), function() use ($user) {
+            return PromptService::infer("Write a personalized greeting for " . $user->name . " who just opened their investing app. They already know the app, it should just be a welcome.");
+        } );
+        return Inertia::render('dashboard', [
+            'greeting' => $greeting
+        ]);
     })->name('dashboard');
 
-    Route::get('stock-selector', function () {
-        return Inertia::render('stock-selector/view', [
-            'stocks' => StockService::getDataForStocks(StockService::randomStocks())
-        ]);
-    })->name('stock-selector');
+    Route::get('stock-selector', [StockSelectorController::class, "view"])->name('stock-selector');
+    Route::post('stock-selector', [StockSelectorController::class, "store"])->name('stock-selector.store');
+    Route::delete('stock-selector/{name}', [StockSelectorController::class, "destroy"])->name('stock-selector.destroy');
     
-    Route::get('ai-test', function () {
-        return PromptService::infer("Say hello");
-    })->name('ai-test');
 
     Route::get('quiz', function () {
         return Inertia::render('quiz/view');

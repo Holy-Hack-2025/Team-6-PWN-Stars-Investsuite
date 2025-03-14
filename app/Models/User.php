@@ -11,7 +11,12 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
-
+    /**
+     * The relationships that should always be loaded.
+     *
+     * @var array
+     */
+    protected $with = ['watchlistItems'];
     /**
      * The attributes that are mass assignable.
      *
@@ -44,5 +49,13 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the watchlist items for the user.
+     */
+    public function watchlistItems()
+    {
+        return $this->hasMany(WatchlistItem::class);
     }
 }

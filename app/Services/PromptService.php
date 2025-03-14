@@ -8,7 +8,7 @@ class PromptService {
     public static function infer(string $prompt) {
         $client = new Client('AIzaSyDt7YFFVYsyOgWgCqmd7uSYueNtpMjmcRI');
         $response = $client->generativeModel(ModelName::GEMINI_1_5_FLASH)->generateContent(
-            new TextPart('Write a one sentence hello message'),
+            new TextPart($prompt),
         );
         
         return $response->text();

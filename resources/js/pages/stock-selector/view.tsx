@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import React, { useMemo, useRef, useState } from 'react';
 
 import { Line } from 'react-chartjs-2';
@@ -31,6 +31,9 @@ interface Stock {
 
 interface Props {
     stocks: Stock[];
+    watchList: {
+        stock_name: string;
+    }[];
 }
 
 import { Button } from '@/components/ui/button';
@@ -39,12 +42,11 @@ import { CategoryScale, Chart as ChartJS, Legend, LinearScale, LineElement, Poin
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-export default function StockSelector({ stocks: stockProps }: Props) {
+export default function StockSelector({ stocks: stockProps, watchList }: Props) {
     const [stocks, setStocks] = useState(stockProps);
     console.log(stocks);
     const [currentIndex, setCurrentIndex] = useState(stocks.length - 1);
     const currentIndexRef = useRef(currentIndex);
-    const [selectedStocks, setSelectedStocks] = useState<Stock[]>([]);
     const childRefs = useMemo(
         () =>
             Array(stocks.length)
@@ -60,7 +62,7 @@ export default function StockSelector({ stocks: stockProps }: Props) {
 
     const swiped = (direction: string, nameToDelete: string, index: number) => {
         if (direction == 'right') {
-            setSelectedStocks([...selectedStocks, stocks[index]]);
+            router.post('/stock-selector', { name: stocks[index].name });
         }
         updateCurrentIndex(index - 1);
         setTimeout(() => setStocks((stocks) => stocks.slice(0, stocks.length - 1)), 1000);
@@ -158,15 +160,14 @@ export default function StockSelector({ stocks: stockProps }: Props) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {selectedStocks.map((stock, index) => (
+                        {watchList.map((stock, index) => (
                             <TableRow key={`${index}-${index}`}>
-                                <TableCell>{stock.name}</TableCell>
+                                <TableCell>{stock.stock_name}</TableCell>
                                 <TableCell>
                                     <Button
                                         variant="destructive"
                                         onClick={() => {
-                                            const newStocks = stocks.filter((_, i) => i !== index);
-                                            setSelectedStocks(newStocks);
+                                            router.delete('/stock-selector/' + stock.stock_name);
                                         }}
                                     >
                                         Delete

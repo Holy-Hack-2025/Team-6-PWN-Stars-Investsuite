@@ -7,16 +7,16 @@ Welcome to your personal Holy Hack GitHub repository! This serves as a central h
 Each team will be given its own repository within the **Holy Hack** GitHub organization, this is your personal repo. Follow these steps to participate:
 
 1. **Clone this repository to your local machine using**:
-   ```sh
-   git clone https://github.com/HOLY-HACK-ORGANIZATION/YOUR-TEAM-REPO.git
-   ```
+    ```sh
+    git clone https://github.com/HOLY-HACK-ORGANIZATION/YOUR-TEAM-REPO.git
+    ```
 2. **Add your project files to the appropriate directory in your team's repository**.
 3. **Commit and push your changes**:
-   ```sh
-   git add .
-   git commit -m "added my feature"
-   git push origin my-feature
-   ```
+    ```sh
+    git add .
+    git commit -m "added my feature"
+    git push origin my-feature
+    ```
 4. **Submit a pull request (PR)** to your team's repository for code review and merge.
 
 ## Repository Structure (Per Team)
@@ -35,4 +35,5 @@ YOUR-TEAM-REPO/
 - Submit your projects before the 16:00 deadline.
 
 ## ❓ Need help?
+
 If you have any questions, you can contact the github guru's.
