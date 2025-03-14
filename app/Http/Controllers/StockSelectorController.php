@@ -30,6 +30,6 @@ class StockSelectorController extends Controller
     }
 
     public function destroy(string $name) {
-        Auth::user()->watchlistItems->firstWhere("stock_name", $name)->delete();
+        Auth::user()->watchlistItems->firstWhere("stock_name", $name)?->delete();
     }
 }

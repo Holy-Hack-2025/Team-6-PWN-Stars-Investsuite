@@ -3,6 +3,7 @@
 namespace App\Services;
 
 class LearningService {
+    // TODO: dynamically generate these
     private static array $questions = [
         [
             "question" => "What is a stock?",
