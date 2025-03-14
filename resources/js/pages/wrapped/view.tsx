@@ -62,13 +62,42 @@ export default function Wrapped({ cards }: Props) {
                     outerRadius={120} // Adjusted outer radius to make the pie chart smaller
                     label
                     labelLine={false} // Prevent the label lines from extending outside
+                    label={({ cx, cy, midAngle, innerRadius, outerRadius, value, index }) => {
+                        // Positioning the label higher by adjusting the cy (center y-coordinate)
+                        const RADIAN = Math.PI / 180;
+                        const radius = outerRadius + 30; // Move labels higher
+                        const x = cx + radius * Math.cos(midAngle * RADIAN);
+                        const y = cy + radius * Math.sin(midAngle * RADIAN);
+
+                        return (
+                            <text
+                                x={x}
+                                y={y} // Adjusted to move the labels higher
+                                textAnchor="middle"
+                                dominantBaseline="middle"
+                                fill="#fff"
+                                fontSize="12" // Adjust font size if necessary
+                            >
+                                {parsedData[index].sector}
+                            </text>
+                        );
+                    }}
                 >
                     {parsedData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                 </Pie>
                 <Tooltip />
-                <Legend />
+                <Legend
+                    verticalAlign="top"  // Align the legend vertically at the top
+                    height={50}  // Adjust the height of the legend container
+                    wrapperStyle={{
+                        position: 'absolute',
+                        top: '520px',  // Adjust the position to move the legend higher
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                    }}
+                />
             </PieChart>
         );
     };

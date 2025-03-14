@@ -47,14 +47,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
             [
                 'title' => 'Last Quarter you made',
                 'description' => 'You beat 60% of investors.',
-                'highlightText' => '+450.12 !',
+                'highlightText' => '+€450.12 !',
                 'highlightTextClass' => 'text-5xl font-bold text-center mt-6',
                 'extraText' => '+2.21 %',
                 'extraTextClass' => 'text-2xl font-bold text-center mt-2',
             ],
             [
                 'title' => 'Total portfolio',
-                'highlightText' => '12,500',
+                'highlightText' => '€12,500',
                 'highlightTextClass' => 'text-5xl font-bold text-center mt-6',
                 'extraText' => 'All Time High',
                 'extraTextClass' => 'text-xl font-bold text-center mt-1 text-green-200',
@@ -85,7 +85,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             // ],
             [
                 'title' => 'At this current rate, in 5 years you\'ll have',
-                'highlightText' => '30,000 !',
+                'highlightText' => '€30,000 !',
                 'highlightTextClass' => 'text-5xl font-bold text-center mt-6',
             ],
             [
