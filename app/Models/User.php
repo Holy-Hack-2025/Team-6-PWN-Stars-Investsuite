@@ -51,11 +51,13 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * Get the watchlist items for the user.
-     */
     public function watchlistItems()
     {
         return $this->hasMany(WatchlistItem::class);
+    }
+
+    public function stocks()
+    {
+        return $this->hasMany(Stock::class);
     }
 }

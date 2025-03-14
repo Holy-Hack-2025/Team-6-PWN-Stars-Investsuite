@@ -23,7 +23,8 @@ class DatabaseSeeder extends Seeder
             DB::table('stocks')->insert([
                 'user_id' => 1,
                 'stock_name' => $faker->randomElement($stocks),
-                'bought_at' => Carbon::now()->subDays(rand(0, 14))->toDateTimeString(),
+                'bought_at' => Carbon::now()->subDays(rand(0, 183 ))->toDateTimeString(),
+                'bought_price' => $faker->randomFloat(2, 1, 100)
             ]);
         }
     }

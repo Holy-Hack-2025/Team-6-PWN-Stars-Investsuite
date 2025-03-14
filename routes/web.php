@@ -20,14 +20,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         //$res = Http::get("https://newsapi.org/v2/everything?q=Apple&from=2025-03-10&sortBy=popularity&apiKey=af1708d05fc54d82b951c80c295c2bd3");
         //dd($res->json());
+        $stocks = StockService::getDataForStocks( 
+            Auth::user()->stocks->pluck('stock_name')->unique()->toArray()
+        );
 
-        dd(Stock::all());
-        $user = Auth::user();
-        $greeting = Cache::remember("GREETING.".$user->id, now()->addDay(), function() use ($user) {
-            return PromptService::infer("Write a personalized greeting for " . $user->name . " who just opened their investing app. They already know the app, it should just be a welcome.");
-        } );
+
+        $userStocks = Auth::user()->stocks->map(function ($stock) use ($stocks) {
+            return [
+                ...collect($stocks)->firstWhere('name', $stock->stock_name),
+                "bought_at" => $stock->bought_at,
+                "bought_price" => $stock->bought_price,
+            ];
+        });
+        //$greeting = Cache::remember("GREETING.".$user->id, now()->addDay(), function() use ($user) {
+        //    return PromptService::infer("Write a personalized greeting for " . $user->name . " who just opened their investing app. They already know the app, it should just be a welcome.");
+        //} );
         return Inertia::render('dashboard', [
-            'greeting' => $greeting
+            //'greeting' => $greeting,
+            'stocks' => $userStocks
         ]);
     })->name('dashboard');
 

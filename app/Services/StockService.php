@@ -16,7 +16,7 @@ class StockService {
         $historicalData = $client->getHistoricalQuoteData(
             $stockName,
             ApiClient::INTERVAL_1_DAY,
-            new \DateTime("-30 days"),
+            new \DateTime("- 3 months"),
             new \DateTime("today")
         );
         
@@ -28,7 +28,7 @@ class StockService {
     }
 
     public static function getDataForStocks(array $stockNames) {
-        return Cache::remember("STOCKS..DATA", now()->addDay(), function () use ($stockNames) {
+        return Cache::remember("STOCKS.DATA.".implode(",",$stockNames), now()->addDay(), function () use ($stockNames) {
             $out = [];
 
             foreach($stockNames as $stockName) {
