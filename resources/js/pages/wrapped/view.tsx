@@ -20,7 +20,6 @@ interface Props {
 
 export default function Wrapped({ cards }: Props) {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [animate, setAnimate] = useState(false);
     const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
 
     const handleScreenClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -54,9 +53,9 @@ export default function Wrapped({ cards }: Props) {
                         <motion.div
                             key={currentIndex}
                             custom={direction}
-                            initial={{ x: direction === 'forward' ? '100%' : '-100%' }}
-                            animate={{ x: 0 }}
-                            exit={{ x: direction === 'forward' ? '-100%' : '100%' }}
+                            initial={{ x: direction === 'forward' ? '100%' : '-100%' }} // Slide in from the left or right
+                            animate={{ x: 0 }} // Slide to the center
+                            exit={{ opacity: 0 }} // Fade out
                             transition={{
                                 duration: 0.5,
                                 type: 'spring',
