@@ -3,15 +3,19 @@ import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
 
 interface Card {
     title: string;
     description: string;
-    subtitle?: string; // Add subtitle as an optional property
-    highlightText?: string;
-    highlightTextClass?: string;
-    extraText?: string;
-    extraTextClass?: string;
+    highlightText?: string;  // Optional property for text like 450.12!
+    highlightTextClass?: string; // Custom class for styling the highlight text
+    extraText?: string; // Optional property for extra text like 2%
+    extraTextClass?: string; // Custom class for styling the extra text
+    isAllTimeHigh?: boolean; // Boolean to indicate if this is an all-time high
+    topText?: string;
+    subtitle?: string;
+    sampleData?: string; // sampleData is passed as a JSON string
 }
 
 interface Props {
@@ -41,6 +45,31 @@ export default function Wrapped({ cards }: Props) {
         }
     };
 
+    // Function to render the PieChart based on sampleData
+    const renderPieChart = (data: string) => {
+        const parsedData = JSON.parse(data); // Parse the JSON string to an object
+        return (
+            <PieChart width={600} height={600}>
+                <Pie
+                    data={parsedData}
+                    dataKey="count"
+                    nameKey="sector"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={120} // Adjusted outer radius to make the pie chart smaller
+                    label
+                    labelLine={false} // Prevent the label lines from extending outside
+                >
+                    {parsedData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+            </PieChart>
+        );
+    };
+
     return (
         <AppLayout>
             <Head title="Wrapped" />
@@ -65,10 +94,12 @@ export default function Wrapped({ cards }: Props) {
                             className="absolute w-full h-full flex flex-col justify-center items-center bg-[url('/background1.jpg')] rounded-none shadow-xl z-10"
                         >
                             {/* Title */}
+                            <span className="absolute text-3xl top-10">
+                                {cards[currentIndex].topText}
+                            </span>
+
                             <h2 className="text-3xl font-bold text-center relative mb-4">
-                                <span className="title-text">
-                                    {cards[currentIndex].title}
-                                </span>
+                                <span className="title-text">{cards[currentIndex].title}</span>
                                 {cards[currentIndex].highlightText && (
                                     <div
                                         className={cards[currentIndex].highlightTextClass || "text-5xl font-bold text-center mt-6"}
@@ -87,7 +118,7 @@ export default function Wrapped({ cards }: Props) {
 
                             {/* Subtitle - Conditionally render if it exists */}
                             {cards[currentIndex].subtitle && (
-                                <span className="text-2xl text-center">
+                                <span className="text-2xl text-center mb-6">
                                     {cards[currentIndex].subtitle}
                                 </span>
                             )}
@@ -122,6 +153,9 @@ export default function Wrapped({ cards }: Props) {
                                     </div>
                                 ))}
                             </div>
+
+                            {/* Conditionally render the PieChart */}
+                            {cards[currentIndex].sampleData && renderPieChart(cards[currentIndex].sampleData)}
                         </motion.div>
                     </AnimatePresence>
                 </div>
