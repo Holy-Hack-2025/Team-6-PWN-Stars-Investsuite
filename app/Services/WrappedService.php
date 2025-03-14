@@ -47,7 +47,7 @@ class WrappedService {
             //     'subtitle' => 'Your portfolio remained steady throughout the last quarter.',
             // ],
             [
-                'title' => 'At the current rate in 5 years your portfolio will be worth 156,000.',
+                'title' => 'At the current rate in 5 years your portfolio will be worth €156,000.',
                 'description' => "Only 20 more quarters like these and you'll be a millionaire!",
                 'highlightTextClass' => 'text-5xl font-bold text-center mt-6',
             ],

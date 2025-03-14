@@ -1,6 +1,5 @@
-import useLatestNetWorth from '@/hooks/useLatestNetWorth';
 import AppLayout from '@/layouts/app-layout';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import { Cell, Legend, Pie, PieChart, Tooltip } from 'recharts';
@@ -25,8 +24,6 @@ interface Props {
 }
 
 export default function Wrapped({ cards }: Props) {
-    const { latestNetWorth, loading, error } = useLatestNetWorth();
-
     const [currentIndex, setCurrentIndex] = useState(0);
     const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
 
@@ -42,9 +39,11 @@ export default function Wrapped({ cards }: Props) {
             }
         } else {
             // Clicked on right half (Go Forward)
-            if (currentIndex < cards.length - 1) {
+            if (currentIndex < cards.length - 2) {
                 setDirection('forward');
                 setCurrentIndex(currentIndex + 1);
+            } else {
+                router.visit('/dashboard');
             }
         }
     };
@@ -107,7 +106,7 @@ export default function Wrapped({ cards }: Props) {
         <AppLayout>
             <Head title="Wrapped" />
             <div
-                className="flex h-full items-center justify-center bg-black text-white"
+                className="z-[999] flex h-screen items-center justify-center bg-black text-white"
                 onClick={handleScreenClick} // Detect left or right click
             >
                 <div className="relative h-full w-full cursor-pointer overflow-hidden bg-[#EEC2BE]">
