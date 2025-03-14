@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\StockSelectorController;
+use App\Models\Stock;
 use App\Services\LearningService;
 use App\Services\PromptService;
 use App\Services\StockService;
@@ -18,7 +19,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         //$res = Http::get("https://newsapi.org/v2/everything?q=Apple&from=2025-03-10&sortBy=popularity&apiKey=af1708d05fc54d82b951c80c295c2bd3");
         //dd($res->json());
 
-
+        dd(Stock::all());
         $user = Auth::user();
         $greeting = Cache::remember("GREETING.".$user->id, now()->addDay(), function() use ($user) {
             return PromptService::infer("Write a personalized greeting for " . $user->name . " who just opened their investing app. They already know the app, it should just be a welcome.");
