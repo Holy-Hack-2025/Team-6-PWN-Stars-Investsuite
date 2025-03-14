@@ -63,7 +63,7 @@ export default function Wrapped({ cards }: Props) {
                                 stiffness: 120,
                                 damping: 30,
                             }}
-                            className="absolute w-full h-full flex flex-col justify-center items-center bg-[#EEC2BE] rounded-none shadow-xl z-10"
+                            className="absolute w-full h-full flex flex-col justify-center items-center bg-[url('/background1.jpg')] rounded-none shadow-xl z-10"
                         >
                             {/* Title */}
                             <h2 className="text-3xl font-bold text-center relative mb-4">
